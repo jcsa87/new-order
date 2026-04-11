@@ -5,23 +5,51 @@
 ![Metodología](https://img.shields.io/badge/Methodology-Scrum-orange?style=for-the-badge)
 
 ## Descripción del Proyecto
-Sistema de gestión de pedidos. Desarrollado como parte de  investigación de campo para la asignatura **Ingeniería del Software II**. El proyecto se centra en un catálogo genérico donde el núcleo, en una primera instancia, es el **Módulo de Gestión de Pedidos**, abarcando desde la visualización de productos hasta la generación del comprobante final.
+Sistema de gestión de pedidos desarrollado como parte de una investigación de campo para la asignatura **Ingeniería del Software II**. El proyecto se basa en un catálogo genérico donde el núcleo es el **Módulo de Gestión de Pedidos**, abarcando desde la navegación hasta la confirmación de la compra.
+
+## Stack Tecnológico
+- **Entorno:** Node.js
+- **Framework:** Express.js
+- **Motor de Vistas:** EJS (Embedded JavaScript templates)
+- **Estilos:** CSS3 Custom Properties
 
 ## Arquitectura y Diseño
-El sistema sigue un enfoque de **Monolito Modular** bajo una **Arquitectura Multicapa**, utilizando el patrón de diseño **MVC (Modelo-Vista-Controlador)** para garantizar la separación de responsabilidades y la mantenibilidad.
+El sistema sigue un enfoque de **Monolito Modular** bajo una **Arquitectura Multicapa**, utilizando el patrón **MVC**.
 
-### Capas del Sistema:
-- **Vista (UI):** Interfaz intuitiva enfocada en la experiencia de usuario (UX) durante el proceso de compra.
-- **Controlador (Lógica de Negocio):** El "corazón" del sistema. Centraliza:
-  - Reglas de negocio y validaciones.
-  - Gestión de inventario y stock en tiempo real.
-  - Cálculos dinámicos (impuestos, descuentos, costos de envío).
-- **Modelo (Acceso a Datos):** Encargado de la persistencia e integridad referencial de entidades como Usuarios, Pedidos, Detalle de Pedido y Productos.
+### Estructura de Capas:
+- **`src/views/` (Presentación):** Interfaz enfocada en la experiencia de usuario (UX).
+- **`src/services/` (Lógica de Negocio - Core):** Centraliza las reglas, validaciones de stock y cálculos dinámicos (IVA, descuentos). *Nota: En esta arquitectura, el controlador coordina y los servicios contienen el conocimiento de dominio.*
+- **`src/controllers/` (Controladores):** Manejan el flujo de las peticiones HTTP y la comunicación entre capas.
+- **`src/models/` (Acceso a Datos):** Actualmente implementado mediante **Mocks** para facilitar el testeo rápido de la lógica de negocio.
 
-## Gestión de Riesgos
-- Adaptabilidad ante cambios en los requerimientos del flujo de compra.
-- Mitigación de errores críticos en el carrito y checkout.
-- Control de estabilidad en integraciones externas (pagos/envío).
+### Estructura de Directorios:
+```text
+src/
+├── controllers/  # Coordinación de flujo
+├── models/       # Datos (Mocks)
+├── public/       # CSS, Imágenes y JS Cliente
+├── routes/       # Definición de Endpoints
+├── services/     # EL NÚCLEO (Lógica de Negocio)
+├── views/        # Plantillas EJS
+└── app.js        # Configuración principal
+```
+
+## Instalación y Ejecución
+
+1. **Instalar dependencias:**
+   ```bash
+   npm install
+   ```
+2. **Ejecutar en modo producción:**
+   ```bash
+   npm start
+   ```
+3. **Ejecutar en modo desarrollo:**
+   ```bash
+   npm run dev
+   ```
+*Acceso:* `http://localhost:3000`
+
 
 ---
-*Proyecto de carácter académico con fines de aplicar las mejores prácticas de ingeniería de software.*
+*Este proyecto es de carácter académico enfocado en la aplicación de patrones de ingeniería de software.*

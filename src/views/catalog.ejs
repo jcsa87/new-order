@@ -1,0 +1,30 @@
+<%- include('partials/header') %>
+
+<section class="hero">
+    <h1>Descubre lo último en tecnología</h1>
+    <p>Calidad, garantía e innovación en cada pedido.</p>
+</section>
+
+<div class="product-grid">
+    <% products.forEach(product => { %>
+        <article class="product-card">
+            <div class="product-image" style="background-image: url('<%= product.image %>'); background-size: cover;"></div>
+            <div class="product-info">
+                <h3><%= product.name %></h3>
+                <p><%= product.description %></p>
+            </div>
+            <div class="product-footer">
+                <span class="price">$<%= product.price %></span>
+                <form action="/cart/add" method="POST">
+                    <input type="hidden" name="productId" value="<%= product.id %>">
+                    <button type="submit" class="add-btn" <%= product.stock === 0 ? 'disabled' : '' %>>
+                        <%= product.stock > 0 ? 'Añadir al carrito' : 'Sin Stock' %>
+                    </button>
+                </form>
+            </div>
+            <small style="color: var(--text-muted); margin-top: 10px;">En stock: <%= product.stock %></small>
+        </article>
+    <% }) %>
+</div>
+
+<%- include('partials/footer') %>

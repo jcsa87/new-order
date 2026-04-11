@@ -1,0 +1,28 @@
+{
+  "name": "new-order",
+  "version": "1.0.0",
+  "description": "![New Order Banner](https://img.shields.io/badge/Proyecto-Ingeniería_Del_Software_II-blue?style=for-the-badge) ![Arquitectura](https://img.shields.io/badge/Architecture-Modular_Monolith-green?style=for-the-badge) ![Metodología](https://img.shields.io/badge/Methodology-Scrum-orange?style=for-the-badge)",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/app.js",
+    "dev": "node --watch src/app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jcsa87/new-order.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/jcsa87/new-order/issues"
+  },
+  "homepage": "https://github.com/jcsa87/new-order#readme",
+  "dependencies": {
+    "dotenv": "^17.4.1",
+    "ejs": "^5.0.1",
+    "express": "^5.2.1"
+  }
+}
