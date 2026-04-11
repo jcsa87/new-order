@@ -17,10 +17,10 @@ Sistema de gestión de pedidos desarrollado como parte de una investigación de 
 El sistema sigue un enfoque de **Monolito Modular** bajo una **Arquitectura Multicapa**, utilizando el patrón **MVC**.
 
 ### Estructura de Capas:
-- **`src/views/` (Presentación):** Interfaz enfocada en la experiencia de usuario (UX).
-- **`src/services/` (Lógica de Negocio - Core):** Centraliza las reglas, validaciones de stock y cálculos dinámicos (IVA, descuentos). *Nota: En esta arquitectura, el controlador coordina y los servicios contienen el conocimiento de dominio.*
-- **`src/controllers/` (Controladores):** Manejan el flujo de las peticiones HTTP y la comunicación entre capas.
-- **`src/models/` (Acceso a Datos):** Actualmente implementado mediante **Mocks** para facilitar el testeo rápido de la lógica de negocio.
+- **`src/views/` (Presentación):**
+- **`src/services/` (Lógica de Negocio - Core):**
+- **`src/controllers/` (Controladores):**
+- **`src/models/` (Acceso a Datos):**
 
 ### Estructura de Directorios:
 ```text
