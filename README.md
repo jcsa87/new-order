@@ -1,8 +1,8 @@
 # New Order - Sistema de Gestión de Pedidos
 
-![New Order Banner](https://img.shields.io/badge/Project-Software_Engineering_II-blue?style=for-the-badge)
-![Architecture](https://img.shields.io/badge/Architecture-Modular_Monolith-green?style=for-the-badge)
-![Methodology](https://img.shields.io/badge/Methodology-Scrum-orange?style=for-the-badge)
+![New Order Banner](https://img.shields.io/badge/Proyecto-Ingeniería_Del_Software_II-blue?style=for-the-badge)
+![Arquitectura](https://img.shields.io/badge/Architecture-Modular_Monolith-green?style=for-the-badge)
+![Metodología](https://img.shields.io/badge/Methodology-Scrum-orange?style=for-the-badge)
 
 ## Descripción del Proyecto
 Sistema de gestión de pedidos. Desarrollado como parte de  investigación de campo para la asignatura **Ingeniería del Software II**. El proyecto se centra en un catálogo genérico donde el núcleo, en una primera instancia, es el **Módulo de Gestión de Pedidos**, abarcando desde la visualización de productos hasta la generación del comprobante final.
