@@ -1,0 +1,100 @@
+<!-- src/views/partials/cartSidebar.ejs -->
+<div id="cartSidebar" class="fixed inset-0 z-[60] invisible transition-all duration-300">
+    <!-- Overlay -->
+    <div id="cartOverlay" class="absolute inset-0 bg-slate-950/40 backdrop-blur-sm opacity-0 transition-opacity duration-300" onclick="closeCart()"></div>
+    
+    <!-- Sidebar -->
+    <div id="cartPanel" class="absolute top-0 right-0 h-full w-full max-w-md bg-white dark:bg-slate-900 shadow-2xl translate-x-full transition-transform duration-300 flex flex-col">
+        <!-- Header -->
+        <div class="p-6 border-b border-gray-100 dark:border-slate-800 flex items-center justify-between">
+            <h2 class="text-xl font-extrabold text-gray-900 dark:text-white flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h1.5l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>
+                Tu Carrito
+            </h2>
+            <button onclick="closeCart()" class="p-2 rounded-xl border border-gray-100 dark:border-slate-800 hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+        </div>
+
+        <!-- Items Content -->
+        <div class="flex-grow overflow-y-auto p-6 space-y-4">
+            <% if (typeof items === 'undefined' || items.length === 0) { %>
+                <div class="h-full flex flex-col items-center justify-center text-center space-y-4 opacity-50">
+                    <svg class="w-16 h-16 text-gray-300 dark:text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+                    <p class="text-gray-500 dark:text-slate-400 font-medium">El carrito está vacío</p>
+                    <button onclick="closeCart()" class="text-primary font-bold text-sm">Explorar productos</button>
+                </div>
+            <% } else { %>
+                <% items.forEach(item => { %>
+                    <div class="flex items-center gap-4 p-4 bg-gray-50 dark:bg-slate-800/50 rounded-2xl border border-gray-100/50 dark:border-slate-800/50">
+                        <div class="w-16 h-16 bg-gradient-to-br from-primary/10 to-secondary/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <svg class="w-6 h-6 text-primary/40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+                        </div>
+                        <div class="flex-grow min-w-0">
+                            <h4 class="font-bold text-gray-900 dark:text-white truncate text-sm"><%= item.nombre %></h4>
+                            <p class="text-xs text-gray-500 dark:text-slate-400 mt-1">
+                                <span class="font-medium text-primary">$<%= item.precio_unitario %></span> × <%= item.quantity %>
+                            </p>
+                        </div>
+                        <div class="text-right">
+                            <span class="font-black text-gray-900 dark:text-white text-base">$<%= (item.precio_unitario * item.quantity).toFixed(2) %></span>
+                        </div>
+                    </div>
+                <% }) %>
+            <% } %>
+        </div>
+
+        <!-- Footer / Summary -->
+        <% if (typeof items !== 'undefined' && items.length > 0) { %>
+            <div class="p-6 bg-gray-50 dark:bg-slate-800/80 border-t border-gray-100 dark:border-slate-800">
+                <div class="space-y-3 mb-6">
+                    <div class="flex justify-between text-sm text-gray-500 dark:text-slate-400">
+                        <span>Subtotal</span>
+                        <span class="font-bold text-gray-900 dark:text-white">$<%= totals.subtotal %></span>
+                    </div>
+                    <div class="flex justify-between text-sm text-gray-500 dark:text-slate-400">
+                        <span>Envío</span>
+                        <span class="text-green-500 font-bold">GRATIS</span>
+                    </div>
+                    <div class="pt-3 border-t border-gray-200 dark:border-slate-700 flex justify-between items-end">
+                        <span class="text-xs uppercase font-black text-primary tracking-widest">Total Final</span>
+                        <span class="text-2xl font-black text-gray-900 dark:text-white">$<%= totals.total %></span>
+                    </div>
+                </div>
+                <button class="w-full py-4 bg-primary text-white rounded-2xl font-black text-lg hover:bg-secondary active:scale-95 transition-all shadow-lg shadow-primary/20">
+                    Finalizar Compra
+                </button>
+            </div>
+        <% } %>
+    </div>
+</div>
+
+<script>
+    function openCart() {
+        const sidebar = document.getElementById('cartSidebar');
+        const panel = document.getElementById('cartPanel');
+        const overlay = document.getElementById('cartOverlay');
+        
+        sidebar.classList.remove('invisible');
+        setTimeout(() => {
+            panel.classList.remove('translate-x-full');
+            overlay.classList.replace('opacity-0', 'opacity-100');
+        }, 10);
+    }
+
+    function closeCart() {
+        const sidebar = document.getElementById('cartSidebar');
+        const panel = document.getElementById('cartPanel');
+        const overlay = document.getElementById('cartOverlay');
+        
+        panel.classList.add('translate-x-full');
+        overlay.classList.replace('opacity-100', 'opacity-0');
+        
+        setTimeout(() => {
+            sidebar.classList.add('invisible');
+        }, 300);
+    }
+
+    // Auto-open if redirected with item added (optional but good)
+    // if (window.location.search.includes('cart=open')) openCart();
+</script>

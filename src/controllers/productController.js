@@ -17,8 +17,7 @@ class ProductController {
             })).filter(cat => cat.products.length > 0);
 
             res.render('catalog', { 
-                categories: groupedProducts, 
-                cartCount 
+                categories: groupedProducts
             });
         } catch (error) {
             console.error("Error fetching products:", error);
