@@ -8,15 +8,15 @@
 <div class="product-grid">
     <% products.forEach(product => { %>
         <article class="product-card">
-            <div class="product-image" style="background-image: url('<%= product.image %>'); background-size: cover;"></div>
+            <div class="product-image" style="background-image: url('<%= product.imagen %>'); background-size: cover;"></div>
             <div class="product-info">
-                <h3><%= product.name %></h3>
-                <p><%= product.description %></p>
+                <h3><%= product.nombre %></h3>
+                <p><%= product.descripcion %></p>
             </div>
             <div class="product-footer">
-                <span class="price">$<%= product.price %></span>
+                <span class="price">$<%= product.precio_unitario %></span>
                 <form action="/cart/add" method="POST">
-                    <input type="hidden" name="productId" value="<%= product.id %>">
+                    <input type="hidden" name="productId" value="<%= product.id_producto %>">
                     <button type="submit" class="add-btn" <%= product.stock === 0 ? 'disabled' : '' %>>
                         <%= product.stock > 0 ? 'Añadir al carrito' : 'Sin Stock' %>
                     </button>

@@ -13,10 +13,10 @@
             <% items.forEach(item => { %>
                 <div class="cart-item">
                     <div>
-                        <h4><%= item.name %></h4>
+                        <h4><%= item.nombre %></h4>
                         <small>Cantidad: <%= item.quantity %></small>
                     </div>
-                    <span class="price">$<%= (item.price * item.quantity).toFixed(2) %></span>
+                    <span class="price">$<%= (item.precio_unitario * item.quantity).toFixed(2) %></span>
                 </div>
             <% }) %>
         </div>

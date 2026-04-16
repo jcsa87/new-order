@@ -1,57 +1,34 @@
 // src/models/productModel.js
-// DATA ACCESS LAYER (MOCK)
+// DATA ACCESS LAYER (SQLITE - DER ADAPTED)
 
-const products = [
-    {
-        id: 1,
-        name: "Smartphone Galaxy S24",
-        description: "Última generación con IA integrada.",
-        price: 999.99,
-        stock: 10,
-        image: "/img/s24.png"
-    },
-    {
-        id: 2,
-        name: "MacBook Air M3",
-        description: "Potencia y portabilidad extrema.",
-        price: 1299.00,
-        stock: 5,
-        image: "/img/macbook.png"
-    },
-    {
-        id: 3,
-        name: "Sony WH-1000XM5",
-        description: "Cancelación de ruido líder en la industria.",
-        price: 349.50,
-        stock: 15,
-        image: "/img/sony.png"
-    },
-    {
-        id: 4,
-        name: "Monitor LG UltraWide",
-        description: "34 pulgadas para máxima productividad.",
-        price: 450.00,
-        stock: 8,
-        image: "/img/monitor.png"
-    }
-];
+const db = require('../database/db');
 
 class ProductModel {
     static getAll() {
-        return products;
+        return new Promise((resolve, reject) => {
+            db.all("SELECT * FROM producto WHERE estado_producto = 'activo'", [], (err, rows) => {
+                if (err) reject(err);
+                else resolve(rows);
+            });
+        });
     }
 
     static getById(id) {
-        return products.find(p => p.id === parseInt(id));
+        return new Promise((resolve, reject) => {
+            db.get("SELECT * FROM producto WHERE id_producto = ?", [id], (err, row) => {
+                if (err) reject(err);
+                else resolve(row);
+            });
+        });
     }
 
     static updateStock(id, newStock) {
-        const index = products.findIndex(p => p.id === parseInt(id));
-        if (index !== -1) {
-            products[index].stock = newStock;
-            return true;
-        }
-        return false;
+        return new Promise((resolve, reject) => {
+            db.run("UPDATE producto SET stock = ? WHERE id_producto = ?", [newStock, id], function(err) {
+                if (err) reject(err);
+                else resolve(this.changes > 0);
+            });
+        });
     }
 }
 

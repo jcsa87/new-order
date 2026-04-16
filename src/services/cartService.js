@@ -9,18 +9,18 @@ class CartService {
     addToCart(product, quantity = 1) {
         // Regla de negocio: Validar stock
         if (product.stock < quantity) {
-            throw new Error(`Stock insuficiente para ${product.name}`);
+            throw new Error(`Stock insuficiente para ${product.nombre}`);
         }
 
-        const existingItem = this.cart.find(item => item.id === product.id);
+        const existingItem = this.cart.find(item => item.id_producto === product.id_producto);
         
         if (existingItem) {
             existingItem.quantity += quantity;
         } else {
             this.cart.push({
-                id: product.id,
-                name: product.name,
-                price: product.price,
+                id_producto: product.id_producto,
+                nombre: product.nombre,
+                precio_unitario: product.precio_unitario,
                 quantity: quantity
             });
         }
@@ -30,7 +30,7 @@ class CartService {
 
     calculateTotal() {
         // Regla de negocio: Cálculo dinámico de totales
-        const subtotal = this.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        const subtotal = this.cart.reduce((sum, item) => sum + (item.precio_unitario * item.quantity), 0);
         const taxes = subtotal * 0.21; // Ejemplo: 21% IVA
         const total = subtotal + taxes;
 

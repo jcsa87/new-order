@@ -15,18 +15,16 @@ class CartController {
         });
     }
 
-    static addItem(req, res) {
+    static async addItem(req, res) {
         const { productId } = req.body;
-        const product = ProductModel.getById(productId);
+        try {
+            const product = await ProductModel.getById(productId);
 
-        if (product) {
-            try {
+            if (product) {
                 CartService.addToCart(product, 1);
-                // En un caso real, aquí decrementaríamos stock o lo haríamos en el checkout
-                // Para este sprint, solo simulamos la adición
-            } catch (error) {
-                console.error(error.message);
             }
+        } catch (error) {
+            console.error("Error adding item to cart:", error);
         }
         res.redirect('/');
     }
