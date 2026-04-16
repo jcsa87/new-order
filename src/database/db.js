@@ -6,17 +6,16 @@ const db = new sqlite3.Database(dbPath);
 
 const initDb = () => {
     db.serialize(() => {
-        console.log("Iniciando reestructuración de base de datos según DER...");
 
         // Usar PRAGMA synchronous y journal_mode para estabilidad
         db.run("PRAGMA foreign_keys = OFF");
-        
+
         const tables = [
-            'detalle_pedido', 'pedido', 'producto', 'categoria', 
-            'usuario', 'rol', 'direccion', 'localidad', 'provincia', 
+            'detalle_pedido', 'pedido', 'producto', 'categoria',
+            'usuario', 'rol', 'direccion', 'localidad', 'provincia',
             'pais', 'metodo_pago', 'metodo_envio'
         ];
-        
+
         tables.forEach(table => {
             db.run(`DROP TABLE IF EXISTS ${table}`);
         });
@@ -134,9 +133,9 @@ const initDb = () => {
 
         // SEEDING (dentro del mismo serialize para garantizar orden)
         db.run("INSERT INTO pais (nombre) VALUES ('Argentina')");
-        
+
         const provincias = [
-            ['Buenos Aires', 1], ['CABA', 1], ['Córdoba', 1], ['Santa Fe', 1], 
+            ['Buenos Aires', 1], ['CABA', 1], ['Córdoba', 1], ['Santa Fe', 1],
             ['Mendoza', 1], ['Tucumán', 1], ['Entre Ríos', 1], ['Salta', 1]
         ];
         provincias.forEach(p => {
@@ -151,7 +150,7 @@ const initDb = () => {
             db.run("INSERT INTO localidad (nombre, id_provincia) VALUES (?, ?)", l);
         });
 
-        db.run("INSERT INTO rol (nombre, estado) VALUES ('Administrador', 'activo')"); 
+        db.run("INSERT INTO rol (nombre, estado) VALUES ('Administrador', 'activo')");
         db.run("INSERT INTO rol (nombre, estado) VALUES ('Cliente', 'activo')");
 
         const categorias = [

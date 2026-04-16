@@ -1,93 +1,125 @@
 <%- include('../partials/header') %>
 
-<div class="auth-container" style="max-width: 700px;"> <!-- Expanded for address info -->
-    <div class="auth-header">
-        <h2>Crear Cuenta</h2>
-        <p>Únete a la experiencia New Order</p>
-    </div>
-
-    <form action="/auth/register" method="POST" class="auth-form">
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
-            <!-- Datos Personales -->
-            <div class="form-section">
-                <h3 style="margin-bottom: 1rem; color: var(--primary);">Datos Personales</h3>
-                <div class="form-group">
-                    <label for="nombre">Nombre</label>
-                    <input type="text" id="nombre" name="nombre" placeholder="Juan" required>
-                </div>
-                <div class="form-group">
-                    <label for="apellido">Apellido</label>
-                    <input type="text" id="apellido" name="apellido" placeholder="Pérez" required>
-                </div>
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" placeholder="tu@email.com" required>
-                </div>
-                <div class="form-group">
-                    <label for="contrasena">Contraseña</label>
-                    <input type="password" id="contrasena" name="contrasena" placeholder="••••••••" required>
-                </div>
-                <div class="form-group">
-                    <label for="id_rol">Tipo de Usuario</label>
-                    <select id="id_rol" name="id_rol">
-                        <% roles.forEach(role => { %>
-                            <option value="<%= role.id_rol %>" <%= role.nombre === 'Cliente' ? 'selected' : '' %>><%= role.nombre %></option>
-                        <% }) %>
-                    </select>
-                </div>
-            </div>
-
-            <!-- Datos de Dirección -->
-            <div class="form-section">
-                <h3 style="margin-bottom: 1rem; color: var(--primary);">Dirección Obligatoria</h3>
-                <div class="form-group">
-                    <label for="calle">Calle</label>
-                    <input type="text" id="calle" name="calle" placeholder="Av. Principal" required>
-                </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
-                    <div class="form-group">
-                        <label for="numero_calle">Número</label>
-                        <input type="text" id="numero_calle" name="numero_calle" placeholder="123" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="codigo_postal">C.P.</label>
-                        <input type="text" id="codigo_postal" name="codigo_postal" placeholder="1000" required>
-                    </div>
-                </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
-                    <div class="form-group">
-                        <label for="nro_piso">Piso</label>
-                        <input type="text" id="nro_piso" name="nro_piso" placeholder="4">
-                    </div>
-                    <div class="form-group">
-                        <label for="nro_departamento">Depto</label>
-                        <input type="text" id="nro_departamento" name="nro_departamento" placeholder="B">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="id_provincia">Provincia</label>
-                    <select id="id_provincia" name="id_provincia">
-                        <% provincias.forEach(prov => { %>
-                            <option value="<%= prov.id_provincia %>"><%= prov.nombre %></option>
-                        <% }) %>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="id_localidad">Localidad</label>
-                    <select id="id_localidad" name="id_localidad">
-                        <% localidades.forEach(loc => { %>
-                            <option value="<%= loc.id_localidad %>"><%= loc.nombre %></option>
-                        <% }) %>
-                    </select>
-                </div>
-            </div>
+<div class="flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-4xl w-full space-y-8 bg-white dark:bg-slate-900 p-8 sm:p-12 rounded-3xl border border-gray-200 dark:border-slate-800 shadow-xl">
+        <div class="text-center mb-10">
+            <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white">
+                Crear Cuenta
+            </h2>
+            <p class="mt-2 text-sm text-gray-500 dark:text-slate-400">
+                Únete a la experiencia New Order y accede a tecnología premium
+            </p>
         </div>
 
-        <button type="submit" class="auth-btn" style="width: 100%;">Registrarse</button>
-    </form>
+        <form action="/auth/register" method="POST" class="space-y-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                <!-- Datos Personales -->
+                <div class="space-y-5">
+                    <h3 class="text-lg font-bold text-primary flex items-center">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></svg>
+                        Datos Personales
+                    </h3>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="form-group">
+                            <label for="nombre" class="text-xs font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider mb-1 block pl-1">Nombre</label>
+                            <input type="text" id="nombre" name="nombre" required placeholder="Juan" class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-800/50 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all">
+                        </div>
+                        <div class="form-group">
+                            <label for="apellido" class="text-xs font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider mb-1 block pl-1">Apellido</label>
+                            <input type="text" id="apellido" name="apellido" required placeholder="Pérez" class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-800/50 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all">
+                        </div>
+                    </div>
 
-    <div class="auth-footer">
-        ¿Ya tienes cuenta? <a href="/auth/login">Inicia sesión</a>
+                    <div class="form-group">
+                        <label for="email" class="text-xs font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider mb-1 block pl-1">Email</label>
+                        <input type="email" id="email" name="email" required placeholder="tu@email.com" class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-800/50 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="contrasena" class="text-xs font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider mb-1 block pl-1">Contraseña</label>
+                        <input type="password" id="contrasena" name="contrasena" required placeholder="••••••••" class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-800/50 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="id_rol" class="text-xs font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider mb-1 block pl-1">Tipo de Usuario</label>
+                        <select id="id_rol" name="id_rol" class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-800/50 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all appearance-none cursor-pointer">
+                            <% roles.forEach(role => { %>
+                                <option value="<%= role.id_rol %>" <%= role.nombre === 'Cliente' ? 'selected' : '' %>><%= role.nombre %></option>
+                            <% }) %>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Datos de Dirección -->
+                <div class="space-y-5">
+                    <h3 class="text-lg font-bold text-secondary flex items-center">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                        Dirección Obligatoria
+                    </h3>
+
+                    <div class="form-group">
+                        <label for="calle" class="text-xs font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider mb-1 block pl-1">Calle</label>
+                        <input type="text" id="calle" name="calle" required placeholder="Av. Principal" class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-800/50 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition-all">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="form-group">
+                            <label for="numero_calle" class="text-xs font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider mb-1 block pl-1">Número</label>
+                            <input type="text" id="numero_calle" name="numero_calle" required placeholder="123" class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-800/50 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition-all">
+                        </div>
+                        <div class="form-group">
+                            <label for="codigo_postal" class="text-xs font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider mb-1 block pl-1">C.P.</label>
+                            <input type="text" id="codigo_postal" name="codigo_postal" required placeholder="1000" class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-800/50 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition-all">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="form-group">
+                            <label for="nro_piso" class="text-xs font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider mb-1 block pl-1">Piso</label>
+                            <input type="text" id="nro_piso" name="nro_piso" placeholder="4" class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-800/50 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition-all">
+                        </div>
+                        <div class="form-group">
+                            <label for="nro_departamento" class="text-xs font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider mb-1 block pl-1">Depto</label>
+                            <input type="text" id="nro_departamento" name="nro_departamento" placeholder="B" class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-800/50 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition-all">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="form-group">
+                            <label for="id_provincia" class="text-xs font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider mb-1 block pl-1">Provincia</label>
+                            <select id="id_provincia" name="id_provincia" class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-800/50 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition-all appearance-none cursor-pointer">
+                                <% provincias.forEach(prov => { %>
+                                    <option value="<%= prov.id_provincia %>"><%= prov.nombre %></option>
+                                <% }) %>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="id_localidad" class="text-xs font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider mb-1 block pl-1">Localidad</label>
+                            <select id="id_localidad" name="id_localidad" class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-800/50 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition-all appearance-none cursor-pointer">
+                                <% localidades.forEach(loc => { %>
+                                    <option value="<%= loc.id_localidad %>"><%= loc.nombre %></option>
+                                <% }) %>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button 
+                type="submit" 
+                class="w-full py-4 bg-gradient-to-r from-primary to-secondary text-white font-black text-lg rounded-2xl shadow-xl shadow-primary/20 hover:opacity-90 active:scale-[0.99] transition-all"
+            >
+                Finalizar Registro
+            </button>
+        </form>
+
+        <div class="text-center mt-8">
+            <p class="text-sm text-gray-500 dark:text-slate-400">
+                ¿Ya tienes cuenta? 
+                <a href="/auth/login" class="font-bold text-primary hover:text-secondary">Inicia sesión aquí</a>
+            </p>
+        </div>
     </div>
 </div>
 

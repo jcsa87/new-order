@@ -1,27 +1,50 @@
 <%- include('../partials/header') %>
 
-<div class="auth-container">
-    <div class="auth-header">
-        <h2>Bienvenido</h2>
-        <p>Ingresa a tu cuenta de New Order</p>
-    </div>
-
-    <form action="/auth/login" method="POST" class="auth-form">
-        <div class="form-group">
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email" placeholder="tu@email.com" required>
+<div class="flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8 bg-white dark:bg-slate-900 p-10 rounded-3xl border border-gray-200 dark:border-slate-800 shadow-xl">
+        <div class="text-center">
+            <h2 class="mt-6 text-3xl font-extrabold text-gray-900 dark:text-white">
+                Bienvenido de nuevo
+            </h2>
+            <p class="mt-2 text-sm text-gray-500 dark:text-slate-400">
+                Ingresa a tu cuenta de New Order
+            </p>
         </div>
 
-        <div class="form-group">
-            <label for="password">Contraseña</label>
-            <input type="password" id="password" name="contrasena" placeholder="••••••••" required>
+        <form action="/auth/login" method="POST" class="mt-8 space-y-6">
+            <div class="space-y-4">
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700 dark:text-slate-300">Email</label>
+                    <input 
+                        type="email" id="email" name="email" required 
+                        class="mt-1 block w-full px-4 py-3 bg-gray-50 dark:bg-slate-800 border border-gray-300 dark:border-slate-700 rounded-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent transition-all outline-none"
+                        placeholder="tu@email.com"
+                    >
+                </div>
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-700 dark:text-slate-300">Contraseña</label>
+                    <input 
+                        type="password" id="password" name="contrasena" required 
+                        class="mt-1 block w-full px-4 py-3 bg-gray-50 dark:bg-slate-800 border border-gray-300 dark:border-slate-700 rounded-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent transition-all outline-none"
+                        placeholder="••••••••"
+                    >
+                </div>
+            </div>
+
+            <button 
+                type="submit" 
+                class="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-sm font-bold text-white bg-primary hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all active:scale-[0.98]"
+            >
+                Iniciar Sesión
+            </button>
+        </form>
+
+        <div class="text-center mt-6">
+            <p class="text-sm text-gray-500 dark:text-slate-400">
+                ¿No tienes cuenta? 
+                <a href="/auth/register" class="font-bold text-primary hover:text-secondary whitespace-nowrap">Regístrate aquí</a>
+            </p>
         </div>
-
-        <button type="submit" class="auth-btn">Iniciar Sesión</button>
-    </form>
-
-    <div class="auth-footer">
-        ¿No tienes cuenta? <a href="/auth/register">Regístrate aquí</a>
     </div>
 </div>
 
