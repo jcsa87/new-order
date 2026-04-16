@@ -154,20 +154,35 @@ const initDb = () => {
         db.run("INSERT INTO rol (nombre, estado) VALUES ('Cliente', 'activo')");
 
         const categorias = [
-            ['Smartphones', 'Última tecnología móvil'],
-            ['Laptops', 'Computadoras portátiles de alto rendimiento'],
-            ['Audio', 'Auriculares y parlantes premium'],
-            ['Accesorios', 'Complementos para tus dispositivos']
+            ['Tecnología', 'Última generación en dispositivos electrónicos'],
+            ['Moda y Calzado', 'Ropa y calzado de las mejores marcas'],
+            ['Hogar y Jardín', 'Todo para que tu casa se sienta como un hogar'],
+            ['Deportes', 'Equipamiento para tu rendimiento máximo'],
+            ['Papelería', 'Útiles escolares y de oficina']
         ];
         categorias.forEach(c => {
             db.run("INSERT INTO categoria (nombre, descripcion) VALUES (?, ?)", c);
         });
 
         const productos = [
-            ["Smartphone Galaxy S24", "Última generación con IA integrada.", 999.99, 10, 'activo', "/img/s24.png", 1],
-            ["MacBook Air M3", "Potencia y portabilidad extrema.", 1299.00, 5, 'activo', "/img/macbook.png", 2],
-            ["Sony WH-1000XM5", "Cancelación de ruido líder en la industria.", 349.50, 15, 'activo', "/img/sony.png", 3],
-            ["Monitor LG UltraWide", "34 pulgadas para máxima productividad.", 450.00, 8, 'activo', "/img/monitor.png", 4]
+            // Tecnología (ID 1)
+            ["Smartphone Galaxy S24", "Última generación con IA integrada.", 999.99, 10, 'activo', "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?q=80&w=2070&auto=format&fit=crop", 1],
+            ["MacBook Air M3", "Potencia y portabilidad extrema.", 1299.00, 5, 'activo', "https://images.unsplash.com/photo-1517336713431-60991318231c?q=80&w=1973&auto=format&fit=crop", 1],
+            
+            // Moda (ID 2)
+            ["Zapatillas Nike Air Max", "Comodidad y estilo icónico.", 120.00, 20, 'activo', "https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=2070&auto=format&fit=crop", 2],
+            ["Remera Essential Black", "Algodón 100% premium.", 25.50, 50, 'activo', "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=1780&auto=format&fit=crop", 2],
+
+            // Hogar (ID 3)
+            ["Lámpara Nórdica", "Diseño minimalista para tu sala.", 45.00, 15, 'activo', "https://images.unsplash.com/photo-1507473885765-e6ed657f997c?q=80&w=1974&auto=format&fit=crop", 3],
+            ["Cafetera Espresso Pro", "Tu café como en la mejor cafetería.", 180.00, 8, 'activo', "https://images.unsplash.com/photo-1517668808822-9eaa02f2a9e0?q=80&w=2069&auto=format&fit=crop", 3],
+
+            // Deportes (ID 4)
+            ["Mesa de Ping Pong", "Diversión y ejercicio en casa.", 350.00, 3, 'activo', "https://images.unsplash.com/photo-1534067783941-51c9c23ecefd?q=80&w=1974&auto=format&fit=crop", 4],
+            ["Set de Pesas 10kg", "Ideal para entrenamiento funcional.", 55.00, 12, 'activo', "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=2070&auto=format&fit=crop", 4],
+
+            // Papelería (ID 5)
+            ["Cuaderno Inteligente", "Escanea tus notas fácilmente.", 30.00, 25, 'activo', "https://images.unsplash.com/photo-1531346878377-a5be20888e57?q=80&w=1974&auto=format&fit=crop", 5]
         ];
         productos.forEach(p => {
             db.run("INSERT INTO producto (nombre, descripcion, precio_unitario, stock, estado_producto, imagen, id_categoria) VALUES (?, ?, ?, ?, ?, ?, ?)", p);
@@ -180,7 +195,7 @@ const initDb = () => {
 
         db.run("PRAGMA foreign_keys = ON", (err) => {
             if (err) console.error("Error activando FK:", err);
-            else console.log("Base de datos adaptada al DER y sembrada con éxito.");
+            else console.log("Base de datos cargada con éxito.");
         });
     });
 };
