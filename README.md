@@ -8,7 +8,7 @@
 
 **New Order** es un sistema integral de gestión de pedidos diseñado bajo estándares de alta ingeniería de software. Originalmente concebido como un prototipo académico para la materia **Ingeniería del Software I**, ha evolucionado hacia una plataforma robusta que implementa un **Monolito Modular** con una separación clara de responsabilidades.
 
-El sistema permite la gestión completa del ciclo de vida de una orden: desde la exploración de productos categorizados dinámicamente hasta la autenticación segura y el checkout con gestión geográfica precisa.
+El sistema permite la gestión completa del ciclo de vida de una orden: desde la exploración de productos categorizados dinámicamente hasta la autenticación segura y el checkout.
 
 ---
 
