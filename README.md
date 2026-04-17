@@ -2,7 +2,7 @@
 
 ![Project Banner](https://img.shields.io/badge/Proyecto-Ingeniería_Del_Software_II-6366f1?style=for-the-badge&logo=rocket)
 ![Architecture](https://img.shields.io/badge/Arquitectura-MVC-10b981?style=for-the-badge&logo=architecture)
-![Database](https://img.shields.io/badge/Database-SQLite_3-003b57?style=for-the-badge&logo=sqlite)
+![Database](https://img.shields.io/badge/Base_De_Datos-SQLite_3-003b57?style=for-the-badge&logo=sqlite)
 
 ## Descripción del Proyecto
 
@@ -108,4 +108,4 @@ El sistema inicializará automáticamente la base de datos `database.db` y reali
 
 ---
 *Este proyecto es parte de la formación académica en Ingeniería de Software. 
-Desarrollado por Senicen Acosta, Juan Cruz y Ramos, Arianda Milagros. 2026*
+Desarrollado por Senicen Acosta, Juan Cruz y Ramos, Aridna Milagros. 2026*
