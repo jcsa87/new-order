@@ -3,7 +3,6 @@
 ![Project Banner](https://img.shields.io/badge/Proyecto-Ingeniería_Del_Software_II-6366f1?style=for-the-badge&logo=rocket)
 ![Architecture](https://img.shields.io/badge/Arquitectura-MVC-10b981?style=for-the-badge&logo=architecture)
 ![Database](https://img.shields.io/badge/Database-SQLite_3-003b57?style=for-the-badge&logo=sqlite)
-![License](https://img.shields.io/badge/License-ISC-f59e0b?style=for-the-badge)
 
 ## Descripción del Proyecto
 
