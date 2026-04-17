@@ -1,7 +1,7 @@
 # New Order - Sistema de Gestión de Pedidos
 
 ![Project Banner](https://img.shields.io/badge/Proyecto-Ingeniería_Del_Software_II-6366f1?style=for-the-badge&logo=rocket)
-![Architecture](https://img.shields.io/badge/Arquitectura-Monolito_Modular-10b981?style=for-the-badge&logo=architecture)
+![Architecture](https://img.shields.io/badge/Arquitectura-MVC-10b981?style=for-the-badge&logo=architecture)
 ![Database](https://img.shields.io/badge/Database-SQLite_3-003b57?style=for-the-badge&logo=sqlite)
 ![License](https://img.shields.io/badge/License-ISC-f59e0b?style=for-the-badge)
 
@@ -62,7 +62,7 @@ src/
 
 ---
 
-## 🗄️ Diseño de Base de Datos (DER)
+## Diseño de Base de Datos (DER)
 
 El sistema ha sido adaptado íntegramente a un modelo relacional de **12 tablas**, garantizando la normalización y escalabilidad de los datos.
 
@@ -108,4 +108,5 @@ El sistema inicializará automáticamente la base de datos `database.db` y reali
 **Acceso Local:** `http://localhost:3000`
 
 ---
-*Este proyecto es parte de la formación académica en Ingeniería de Software. Desarrollado por Senicen Acosta, Juan Cruz y Ramos, Arianda Milagros. 2026*
+*Este proyecto es parte de la formación académica en Ingeniería de Software. 
+Desarrollado por Senicen Acosta, Juan Cruz y Ramos, Arianda Milagros. 2026*
