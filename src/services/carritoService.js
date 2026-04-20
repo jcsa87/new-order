@@ -3,20 +3,11 @@ class CarritoService {
         this.items = []; // En una app real, esto podría estar en sesión o DB temporal
     }
 
-    agregarItem(producto, cantidad) {
-        // Precondiciones: id_producto válido (implícito por el objeto producto), cantidad > 0
+    añadirProducto(producto, cantidad) {
+        // Precondición: El stock ya fue verificado por el controlador antes de esta llamada
         const cant = parseInt(cantidad);
-        if (isNaN(cant) || cant <= 0) throw new Error("La cantidad debe ser mayor a cero.");
-
         const itemExistente = this.items.find(item => item.id_producto === producto.id_producto);
-        const cantidadActual = itemExistente ? itemExistente.quantity : 0;
 
-        // Caso Alternativo (Stock Insuficiente)
-        if (producto.stock < (cantidadActual + cant)) {
-            throw new Error(`Stock insuficiente. Solo quedan ${producto.stock} unidades.`);
-        }
-
-        // Caso Éxito (Stock Suficiente)
         if (itemExistente) {
             itemExistente.quantity += cant;
             itemExistente.subtotal_item = itemExistente.quantity * itemExistente.precio_unitario;

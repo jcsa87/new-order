@@ -3,9 +3,9 @@ const CategoriaModel = require('../models/categoriaModel');
 const CarritoService = require('../services/carritoService');
 
 class ProductoController {
-    static async index(req, res) {
+    static async listarProductos(req, res) {
         try {
-            const productos = await ProductoModel.listarProductos();
+            const productos = await ProductoModel.obtenerActivos();
             const categorias = await CategoriaModel.obtenerTodas();
             
             // Agrupar productos por categoría

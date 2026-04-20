@@ -66,6 +66,17 @@
         nav {
             transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
+
+        /* Hide HTML5 Number Input Spinners */
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+            -webkit-appearance: none; 
+            margin: 0; 
+        }
+
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
     </style>
 </head>
 

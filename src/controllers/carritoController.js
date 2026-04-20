@@ -20,13 +20,17 @@ class CarritoController {
         const qty = parseInt(cantidad) || 1;
         
         try {
+            // Pasos según Diagrama de Secuencia
+            await ProductoModel.verificarStock(productId, qty); // 1. verificarStock(cantidad)
+            
             const producto = await ProductoModel.obtenerPorId(productId);
-
             if (producto) {
-                CarritoService.agregarItem(producto, qty);
+                CarritoService.añadirProducto(producto, qty); // 2. añadirProducto()
             }
+            
             res.redirect('/products?cart=open');
         } catch (error) {
+            // Caso Alternativo: Stock Insuficiente (Diagrama 3)
             console.error("[CONTROLLER] Error:", error.message);
             res.redirect('/products?error=' + encodeURIComponent(error.message));
         }
