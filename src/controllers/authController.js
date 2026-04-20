@@ -10,19 +10,27 @@ class AuthController {
     static async renderRegister(req, res) {
         try {
             const provincias = await UserModel.getProvincias();
-            const roles = await UserModel.getRoles();
-            // Para simplificar, obtenemos las localidades de la primera provincia (o todas si son pocas)
+            // Para simplificar, obtenemos las localidades de la primera provincia
             const localidades = await UserModel.getLocalidadesByProvincia(provincias[0]?.id_provincia || 1);
             
             res.render('auth/register', { 
                 cartCount: 0,
                 provincias,
-                localidades,
-                roles
+                localidades
             });
         } catch (error) {
             console.error(error);
             res.status(500).send("Error cargando formulario");
+        }
+    }
+
+    static async getLocalidades(req, res) {
+        try {
+            const { id } = req.params;
+            const localidades = await UserModel.getLocalidadesByProvincia(id);
+            res.json(localidades);
+        } catch (error) {
+            res.status(500).json({ error: "Error al obtener localidades" });
         }
     }
 
@@ -45,7 +53,7 @@ class AuthController {
                 apellido,
                 email,
                 contrasena: hashedPassword,
-                id_rol: parseInt(id_rol),
+                id_rol: id_rol || 2, // Default to Cliente (2) if not provided
                 address: {
                     calle,
                     numero_calle,

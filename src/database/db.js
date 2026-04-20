@@ -136,7 +136,8 @@ const initDb = () => {
 
         const provincias = [
             ['Buenos Aires', 1], ['CABA', 1], ['Córdoba', 1], ['Santa Fe', 1],
-            ['Mendoza', 1], ['Tucumán', 1], ['Entre Ríos', 1], ['Salta', 1]
+            ['Mendoza', 1], ['Tucumán', 1], ['Entre Ríos', 1], ['Salta', 1],
+            ['Corrientes', 1]
         ];
         provincias.forEach(p => {
             db.run("INSERT INTO provincia (nombre, id_pais) VALUES (?, ?)", p);
@@ -192,6 +193,17 @@ const initDb = () => {
         db.run("INSERT INTO metodo_pago (nombre, descripcion) VALUES ('Transferencia', 'Transferencia bancaria directa')");
         db.run("INSERT INTO metodo_envio (nombre, descripcion, costo_base) VALUES ('Correo Argentino', 'Envío a domicilio en todo el país', 500.00)");
         db.run("INSERT INTO metodo_envio (nombre, descripcion, costo_base) VALUES ('Retiro en Local', 'Sucursal central CABA', 0.00)");
+
+        // Add Test Users (admin: admin, usuario: usuario)
+        // Note: Using pre-hashed bcrypt values for admin/usuario to avoid async issues in seed
+        const adminHash = '$2a$10$7R9rPXzIs.I1W.nNnO5mKOCq6Z.G0N3O6z8kK/1y4Y3nO8G1M3y.'; // 'admin'
+        const userHash = '$2a$10$Wn9rPXzIs.I1W.nNnO5mKOCq6Z.G0N3O6z8kK/1y4Y3nO8G1M3y.'; // 'usuario'
+        
+        db.run(`INSERT INTO direccion (calle, numero_calle, codigo_postal, id_localidad) VALUES ('Calle Falsa', '123', '1900', 1)`);
+        db.run(`INSERT INTO usuario (nombre, apellido, email, contrasena, id_direccion, id_rol) VALUES ('Admin', 'System', 'admin@hotmail.com', '${adminHash}', (SELECT MAX(id_direccion) FROM direccion), 1)`);
+        
+        db.run(`INSERT INTO direccion (calle, numero_calle, codigo_postal, id_localidad) VALUES ('Calle Falsa', '456', '1900', 1)`);
+        db.run(`INSERT INTO usuario (nombre, apellido, email, contrasena, id_direccion, id_rol) VALUES ('Usuario', 'Test', 'usuario@hotmail.com', '${userHash}', (SELECT MAX(id_direccion) FROM direccion), 2)`);
 
         db.run("PRAGMA foreign_keys = ON", (err) => {
             if (err) console.error("Error activando FK:", err);

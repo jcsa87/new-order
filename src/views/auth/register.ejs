@@ -42,14 +42,6 @@
                         <input type="password" id="contrasena" name="contrasena" required placeholder="••••••••" class="w-full px-4 py-3 bg-gray-50 dark:bg-sapphire-800/50 border border-gray-200 dark:border-sapphire-700 rounded-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all">
                     </div>
 
-                    <div class="form-group">
-                        <label for="id_rol" class="text-xs font-bold text-gray-400 dark:text-sapphire-500 uppercase tracking-wider mb-1 block pl-1">Tipo de Usuario</label>
-                        <select id="id_rol" name="id_rol" class="w-full px-4 py-3 bg-gray-50 dark:bg-sapphire-800/50 border border-gray-200 dark:border-sapphire-700 rounded-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all appearance-none cursor-pointer">
-                            <% roles.forEach(role => { %>
-                                <option value="<%= role.id_rol %>" <%= role.nombre === 'Cliente' ? 'selected' : '' %>><%= role.nombre %></option>
-                            <% }) %>
-                        </select>
-                    </div>
                 </div>
 
                 <!-- Datos de Dirección -->
@@ -125,3 +117,36 @@
 </div>
 
 <%- include('../partials/footer') %>
+
+<script>
+    const provinciaSelect = document.getElementById('id_provincia');
+    const localidadSelect = document.getElementById('id_localidad');
+
+    provinciaSelect.addEventListener('change', async (e) => {
+        const idProvincia = e.target.value;
+        if (!idProvincia) return;
+
+        // Deshabilitar y mostrar carga
+        localidadSelect.disabled = true;
+        localidadSelect.innerHTML = '<option value="">Cargando...</option>';
+
+        try {
+            const response = await fetch(`/auth/localidades/${idProvincia}`);
+            const localidades = await response.json();
+
+            // Limpiar y repoblar
+            localidadSelect.innerHTML = '';
+            localidades.forEach(loc => {
+                const option = document.createElement('option');
+                option.value = loc.id_localidad;
+                option.textContent = loc.nombre;
+                localidadSelect.appendChild(option);
+            });
+        } catch (error) {
+            console.error('Error al cargar localidades:', error);
+            localidadSelect.innerHTML = '<option value="">Error al cargar</option>';
+        } finally {
+            localidadSelect.disabled = false;
+        }
+    });
+</script>

@@ -9,6 +9,9 @@ router.post('/login', AuthController.handleLogin);
 router.get('/register', AuthController.renderRegister);
 router.post('/register', AuthController.handleRegister);
 
+// API for locations
+router.get('/localidades/:id', AuthController.getLocalidades);
+
 router.get('/logout', AuthController.handleLogout);
 
 module.exports = router;
