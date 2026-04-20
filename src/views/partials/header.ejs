@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>New Order</title>
+    <link rel="icon" type="image/svg+xml" href="/brand/logo_main.svg">
     <!-- Tailwind Play CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -14,9 +15,22 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: '#6366f1',
-                        secondary: '#a855f7',
-                        accent: '#f43f5e',
+                        sapphire: {
+                            50: '#eceff8',
+                            100: '#dadff1',
+                            200: '#b5bfe3',
+                            300: '#8fa0d6',
+                            400: '#6a80c8',
+                            500: '#4560ba',
+                            600: '#374d95',
+                            700: '#293a70',
+                            800: '#1c264a',
+                            900: '#0e1325',
+                            950: '#0a0d1a'
+                        },
+                        primary: '#4560ba',
+                        secondary: '#374d95',
+                        accent: '#6a80c8',
                     }
                 }
             }
@@ -55,16 +69,16 @@
     </style>
 </head>
 
-<body class="bg-gray-50 text-gray-900 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300">
+<body class="bg-gray-50 text-gray-900 dark:bg-sapphire-950 dark:text-slate-100 transition-colors duration-300">
     <nav id="navbar"
-        class="sticky top-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-gray-200 dark:border-slate-800">
+        class="sticky top-0 z-50 bg-white/80 dark:bg-sapphire-900/80 backdrop-blur-md border-b border-gray-200 dark:border-sapphire-800">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16 relative">
                 <!-- Left: User Greeting -->
                 <div class="flex items-center w-1/3">
                     <% if (user) { %>
                         <div class="hidden sm:flex items-center space-x-3">
-                            <span class="text-sm font-medium text-gray-400 dark:text-slate-500">Hola, <span
+                            <span class="text-sm font-medium text-gray-400 dark:text-sapphire-400">Hola, <span
                                     class="text-gray-900 dark:text-white font-semibold">
                                     <%= user.name %>
                                 </span></span>
@@ -77,11 +91,9 @@
                 <!-- Center: Logo -->
                 <div class="absolute left-1/2 -translate-x-1/2 flex items-center justify-center">
                     <a href="/"
-                        class="flex items-center gap-2 text-2xl font-extrabold tracking-tight hover:scale-105 transition-transform">
-                        <span class="text-3xl filter drop-shadow-sm select-none">🌐</span>
-                        <span class="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent hidden sm:block">
-                            NEW ORDER
-                        </span>
+                        class="flex items-center hover:scale-105 transition-transform">
+                        <img src="/brand/logo_black.svg" class="h-10 dark:hidden" alt="New Order">
+                        <img src="/brand/logo_white.svg" class="h-10 hidden dark:block" alt="New Order">
                     </a>
                 </div>
 
@@ -120,7 +132,7 @@
 
                     <% if (!user) { %>
                         <a href="/auth/login"
-                            class="text-xs font-bold text-white bg-primary px-4 py-2 rounded-lg hover:opacity-90 transition-all shadow-md shadow-primary/20">Login</a>
+                            class="text-xs font-bold text-white bg-primary px-4 py-2 rounded-lg hover:opacity-90 transition-all shadow-md shadow-primary/20">Iniciar Sesión</a>
                         <% } %>
                 </div>
             </div>

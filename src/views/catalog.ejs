@@ -4,7 +4,7 @@
         <h1 class="text-4xl md:text-6xl font-extrabold mb-4 tracking-tight text-gray-900 dark:text-white">
             Bienvenido a <span class="text-primary">New-Order</span>
         </h1>
-        <p class="text-lg text-gray-500 dark:text-slate-400 max-w-2xl mx-auto">
+        <p class="text-lg text-gray-500 dark:text-sapphire-400 max-w-2xl mx-auto">
             Calidad, variedad y los mejores precios en un solo lugar.
         </p>
     </section>
@@ -15,7 +15,7 @@
                 <h2 class="text-2xl font-bold text-gray-900 dark:text-white">
                     <%= category.nombre %>
                 </h2>
-                <div class="h-[1px] flex-grow bg-gray-200 dark:bg-slate-800"></div>
+                <div class="h-[1px] flex-grow bg-gray-200 dark:bg-sapphire-800"></div>
                 <span class="text-sm font-medium text-gray-400">
                     <%= category.products.length %> productos
                 </span>
@@ -24,7 +24,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
                 <% category.products.forEach(product=> { %>
                     <article
-                        class="group bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-3xl overflow-hidden hover:shadow-2xl hover:shadow-primary/10 transition-all duration-300 flex flex-col">
+                        class="group bg-white dark:bg-sapphire-900 border border-gray-200 dark:border-sapphire-800 rounded-3xl overflow-hidden hover:shadow-2xl hover:shadow-primary/10 transition-all duration-300 flex flex-col">
                         <!-- Product Image with Fallback -->
                         <div class="relative h-56 overflow-hidden">
                             <img src="<%= product.imagen || 'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=2070&auto=format&fit=crop' %>"
@@ -38,7 +38,7 @@
                                 class="text-xl font-bold mb-2 text-gray-900 dark:text-white group-hover:text-primary transition-colors">
                                 <%= product.nombre %>
                             </h3>
-                            <p class="text-sm text-gray-500 dark:text-slate-400 mb-6 line-clamp-2">
+                            <p class="text-sm text-gray-500 dark:text-sapphire-400 mb-6 line-clamp-2">
                                 <%= product.descripcion %>
                             </p>
 
@@ -47,7 +47,7 @@
                                     <span class="text-2xl font-black text-gray-900 dark:text-white">$<%=
                                             product.precio_unitario %></span>
                                     <p
-                                        class="text-[10px] text-gray-400 dark:text-slate-500 uppercase font-bold tracking-tighter">
+                                        class="text-[10px] text-gray-400 dark:text-sapphire-500 uppercase font-bold tracking-tighter">
                                         Stock: <%= product.stock %>
                                     </p>
                                 </div>
@@ -55,7 +55,7 @@
                                 <form action="/cart/add" method="POST">
                                     <input type="hidden" name="productId" value="<%= product.id_producto %>">
                                     <button type="submit"
-                                        class="p-3 rounded-2xl bg-primary text-white hover:bg-secondary active:scale-95 transition-all disabled:bg-gray-300 dark:disabled:bg-slate-800 disabled:cursor-not-allowed group/btn"
+                                        class="p-3 rounded-2xl bg-primary text-white hover:bg-secondary active:scale-95 transition-all disabled:bg-gray-300 dark:disabled:bg-sapphire-800 disabled:cursor-not-allowed group/btn"
                                         <%=product.stock===0 ? 'disabled' : '' %>
                                         >
                                         <svg xmlns="http://www.w3.org/2000/svg"
