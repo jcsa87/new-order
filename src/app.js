@@ -3,7 +3,7 @@ const path = require('path');
 const session = require('express-session');
 const SQLiteStore = require('connect-sqlite3')(session);
 require('dotenv').config();
-const CartService = require('./services/cartService');
+const CarritoService = require('./services/carritoService');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -29,9 +29,9 @@ app.use(session({
 
 // Pasar datos de usuario y carrito a todas las vistas
 app.use((req, res, next) => {
-    const items = CartService.getCart();
-    const totals = CartService.calculateTotal();
-    const cartCount = items.reduce((acc, item) => acc + item.quantity, 0);
+    const itemsCarrito = CarritoService.obtenerCarrito();
+    const totales = CarritoService.calcularTotales();
+    const cantidadCarrito = itemsCarrito.reduce((acc, item) => acc + item.quantity, 0);
 
     res.locals.user = req.session.userId ? {
         id: req.session.userId,
@@ -39,17 +39,17 @@ app.use((req, res, next) => {
         role: req.session.userRole
     } : null;
 
-    res.locals.items = items;
-    res.locals.totals = totals;
-    res.locals.cartCount = cartCount;
+    res.locals.itemsCarrito = itemsCarrito;
+    res.locals.totales = totales;
+    res.locals.cantidadCarrito = cantidadCarrito;
 
     next();
 });
 
 // Importación de rutas
-const productRoutes = require('./routes/productRoutes');
-const cartRoutes = require('./routes/cartRoutes');
-const authRoutes = require('./routes/authRoutes');
+const productoRoutes = require('./routes/productoRoutes');
+const carritoRoutes = require('./routes/carritoRoutes');
+const autenticacionRoutes = require('./routes/autenticacionRoutes');
 
 app.get('/', (req, res) => res.redirect('/products'));
 
@@ -58,9 +58,9 @@ app.get('/faq', (req, res) => res.render('faq', { title: 'Preguntas Frecuentes' 
 app.get('/terms', (req, res) => res.render('terms', { title: 'Términos y Condiciones' }));
 app.get('/contact', (req, res) => res.render('contact', { title: 'Contacto' }));
 
-app.use('/products', productRoutes);
-app.use('/cart', cartRoutes);
-app.use('/auth', authRoutes);
+app.use('/products', productoRoutes);
+app.use('/cart', carritoRoutes);
+app.use('/auth', autenticacionRoutes);
 
 app.listen(PORT, () => {
     console.log(`New Order corriendo en http://localhost:${PORT}`);

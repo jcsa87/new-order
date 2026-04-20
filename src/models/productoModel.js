@@ -1,10 +1,7 @@
-// src/models/productModel.js
-// DATA ACCESS LAYER (SQLITE - DER ADAPTED)
-
 const db = require('../database/db');
 
-class ProductModel {
-    static getAll() {
+class ProductoModel {
+    static obtenerTodos() {
         return new Promise((resolve, reject) => {
             const sql = `
                 SELECT p.*, c.nombre as categoria_nombre 
@@ -19,7 +16,7 @@ class ProductModel {
         });
     }
 
-    static getById(id) {
+    static obtenerPorId(id) {
         return new Promise((resolve, reject) => {
             db.get("SELECT * FROM producto WHERE id_producto = ?", [id], (err, row) => {
                 if (err) reject(err);
@@ -28,9 +25,9 @@ class ProductModel {
         });
     }
 
-    static updateStock(id, newStock) {
+    static actualizarStock(id, nuevoStock) {
         return new Promise((resolve, reject) => {
-            db.run("UPDATE producto SET stock = ? WHERE id_producto = ?", [newStock, id], function(err) {
+            db.run("UPDATE producto SET stock = ? WHERE id_producto = ?", [nuevoStock, id], function(err) {
                 if (err) reject(err);
                 else resolve(this.changes > 0);
             });
@@ -38,4 +35,4 @@ class ProductModel {
     }
 }
 
-module.exports = ProductModel;
+module.exports = ProductoModel;

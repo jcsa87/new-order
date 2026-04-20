@@ -1,8 +1,7 @@
-// src/models/userModel.js
 const db = require('../database/db');
 
-class UserModel {
-    static findByEmail(email) {
+class UsuarioModel {
+    static buscarPorEmail(email) {
         return new Promise((resolve, reject) => {
             db.get("SELECT * FROM usuario WHERE email = ?", [email], (err, row) => {
                 if (err) reject(err);
@@ -12,15 +11,15 @@ class UserModel {
     }
 
     /**
-     * Create a user with mandatory address
-     * @param {Object} userData - { nombre, apellido, email, contrasena, roleId, address: { calle, numero_calle, nro_piso, nro_departamento, codigo_postal, id_localidad } }
+     * Crear un usuario con dirección obligatoria
+     * @param {Object} datosUsuario - { nombre, apellido, email, contrasena, id_rol, address: { calle, numero_calle, nro_piso, nro_departamento, codigo_postal, id_localidad } }
      */
-    static create(userData) {
+    static crear(datosUsuario) {
         return new Promise((resolve, reject) => {
             db.serialize(() => {
                 db.run("BEGIN TRANSACTION");
 
-                const { address } = userData;
+                const { address } = datosUsuario;
                 db.run(
                     `INSERT INTO direccion (calle, numero_calle, nro_piso, nro_departamento, codigo_postal, id_localidad) 
                      VALUES (?, ?, ?, ?, ?, ?)`,
@@ -32,12 +31,12 @@ class UserModel {
                         }
 
                         const id_direccion = this.lastID;
-                        const { nombre, apellido, email, contrasena, id_rol } = userData;
+                        const { nombre, apellido, email, contrasena, id_rol } = datosUsuario;
                         
                         db.run(
                             `INSERT INTO usuario (nombre, apellido, email, contrasena, id_direccion, id_rol) 
                              VALUES (?, ?, ?, ?, ?, ?)`,
-                            [nombre, apellido, email, contrasena, id_direccion, id_rol || 2], // 2 = Cliente by default
+                            [nombre, apellido, email, contrasena, id_direccion, id_rol || 2], // 2 = Cliente por defecto
                             function(err) {
                                 if (err) {
                                     db.run("ROLLBACK");
@@ -53,7 +52,7 @@ class UserModel {
         });
     }
 
-    static findById(id) {
+    static obtenerPorId(id) {
         return new Promise((resolve, reject) => {
             db.get("SELECT * FROM usuario WHERE id_usuario = ?", [id], (err, row) => {
                 if (err) reject(err);
@@ -62,8 +61,8 @@ class UserModel {
         });
     }
 
-    // Geo selection helpers
-    static getProvincias() {
+    // Helpers para selección geográfica
+    static obtenerProvincias() {
         return new Promise((resolve, reject) => {
             db.all("SELECT * FROM provincia ORDER BY nombre", [], (err, rows) => {
                 if (err) reject(err);
@@ -72,7 +71,7 @@ class UserModel {
         });
     }
 
-    static getLocalidadesByProvincia(idProvincia) {
+    static obtenerLocalidadesPorProvincia(idProvincia) {
         return new Promise((resolve, reject) => {
             db.all("SELECT * FROM localidad WHERE id_provincia = ? ORDER BY nombre", [idProvincia], (err, rows) => {
                 if (err) reject(err);
@@ -81,7 +80,7 @@ class UserModel {
         });
     }
 
-    static getRoles() {
+    static obtenerRoles() {
         return new Promise((resolve, reject) => {
             db.all("SELECT * FROM rol WHERE estado = 'activo'", [], (err, rows) => {
                 if (err) reject(err);
@@ -91,4 +90,4 @@ class UserModel {
     }
 }
 
-module.exports = UserModel;
+module.exports = UsuarioModel;

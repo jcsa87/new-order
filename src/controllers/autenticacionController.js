@@ -1,22 +1,21 @@
-// src/controllers/authController.js
-const UserModel = require('../models/userModel');
+const UsuarioModel = require('../models/usuarioModel');
 const bcrypt = require('bcryptjs');
 
-class AuthController {
-    static async renderLogin(req, res) {
+class AutenticacionController {
+    static async mostrarLogin(req, res) {
         const error = req.query.error || null;
         const success = req.query.registered ? "¡Registro exitoso! Ya puedes iniciar sesión con tus credenciales." : null;
-        res.render('auth/login', { cartCount: 0, error, success });
+        res.render('auth/login', { cantidadCarrito: 0, error, success });
     }
 
-    static async renderRegister(req, res) {
+    static async mostrarRegistro(req, res) {
         try {
-            const provincias = await UserModel.getProvincias();
+            const provincias = await UsuarioModel.obtenerProvincias();
             // Para simplificar, obtenemos las localidades de la primera provincia
-            const localidades = await UserModel.getLocalidadesByProvincia(provincias[0]?.id_provincia || 1);
+            const localidades = await UsuarioModel.obtenerLocalidadesPorProvincia(provincias[0]?.id_provincia || 1);
             
             res.render('auth/register', { 
-                cartCount: 0,
+                cantidadCarrito: 0,
                 provincias,
                 localidades
             });
@@ -26,36 +25,36 @@ class AuthController {
         }
     }
 
-    static async getLocalidades(req, res) {
+    static async obtenerLocalidades(req, res) {
         try {
             const { id } = req.params;
-            const localidades = await UserModel.getLocalidadesByProvincia(id);
+            const localidades = await UsuarioModel.obtenerLocalidadesPorProvincia(id);
             res.json(localidades);
         } catch (error) {
             res.status(500).json({ error: "Error al obtener localidades" });
         }
     }
 
-    static async handleRegister(req, res) {
+    static async procesarRegistro(req, res) {
         const { 
             nombre, apellido, email, contrasena, id_rol,
             calle, numero_calle, nro_piso, nro_departamento, codigo_postal, id_localidad 
         } = req.body;
 
         try {
-            const existingUser = await UserModel.findByEmail(email);
-            if (existingUser) {
+            const usuarioExistente = await UsuarioModel.buscarPorEmail(email);
+            if (usuarioExistente) {
                 return res.send("El usuario ya existe");
             }
 
             const hashedPassword = await bcrypt.hash(contrasena, 10);
             
-            await UserModel.create({
+            await UsuarioModel.crear({
                 nombre,
                 apellido,
                 email,
                 contrasena: hashedPassword,
-                id_rol: id_rol || 2, // Default to Cliente (2) if not provided
+                id_rol: id_rol || 2, // 2 = Cliente por defecto
                 address: {
                     calle,
                     numero_calle,
@@ -73,22 +72,22 @@ class AuthController {
         }
     }
 
-    static async handleLogin(req, res) {
-        const { email, contrasena } = req.body; // Cambiado de password a contrasena (aunque el name en ejs sigue siendo password usualmente)
+    static async procesarLogin(req, res) {
+        const { email, contrasena } = req.body;
         try {
-            const user = await UserModel.findByEmail(email);
-            if (!user) {
-                return res.render('auth/login', { cartCount: 0, error: "El correo electrónico no está registrado.", success: null });
+            const usuario = await UsuarioModel.buscarPorEmail(email);
+            if (!usuario) {
+                return res.render('auth/login', { cantidadCarrito: 0, error: "El correo electrónico no está registrado.", success: null });
             }
 
-            const isMatch = await bcrypt.compare(contrasena, user.contrasena);
-            if (!isMatch) {
-                return res.render('auth/login', { cartCount: 0, error: "La contraseña ingresada es incorrecta.", success: null });
+            const esIgual = await bcrypt.compare(contrasena, usuario.contrasena);
+            if (!esIgual) {
+                return res.render('auth/login', { cantidadCarrito: 0, error: "La contraseña ingresada es incorrecta.", success: null });
             }
 
-            req.session.userId = user.id_usuario;
-            req.session.userRole = user.id_rol;
-            req.session.userName = user.nombre;
+            req.session.userId = usuario.id_usuario;
+            req.session.userRole = usuario.id_rol;
+            req.session.userName = usuario.nombre;
 
             res.redirect('/');
         } catch (error) {
@@ -97,10 +96,10 @@ class AuthController {
         }
     }
 
-    static handleLogout(req, res) {
+    static cerrarSesion(req, res) {
         req.session.destroy();
         res.redirect('/');
     }
 }
 
-module.exports = AuthController;
+module.exports = AutenticacionController;

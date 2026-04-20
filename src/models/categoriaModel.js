@@ -1,8 +1,7 @@
-// src/models/categoryModel.js
 const db = require('../database/db');
 
-class CategoryModel {
-    static getAll() {
+class CategoriaModel {
+    static obtenerTodas() {
         return new Promise((resolve, reject) => {
             db.all("SELECT * FROM categoria", [], (err, rows) => {
                 if (err) reject(err);
@@ -12,4 +11,4 @@ class CategoryModel {
     }
 }
 
-module.exports = CategoryModel;
+module.exports = CategoriaModel;
