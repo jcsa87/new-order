@@ -5,7 +5,7 @@ const CarritoService = require('../services/carritoService');
 class ProductoController {
     static async index(req, res) {
         try {
-            const productos = await ProductoModel.obtenerTodos();
+            const productos = await ProductoModel.listarProductos();
             const categorias = await CategoriaModel.obtenerTodas();
             
             // Agrupar productos por categoría

@@ -1,7 +1,7 @@
 const db = require('../database/db');
 
 class ProductoModel {
-    static obtenerTodos() {
+    static listarProductos() {
         return new Promise((resolve, reject) => {
             const sql = `
                 SELECT p.*, c.nombre as categoria_nombre 
