@@ -21,6 +21,7 @@ class CartService {
                 id_producto: product.id_producto,
                 nombre: product.nombre,
                 precio_unitario: product.precio_unitario,
+                imagen: product.imagen,
                 quantity: quantity
             });
         }

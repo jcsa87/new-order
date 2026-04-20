@@ -53,6 +53,11 @@ const authRoutes = require('./routes/authRoutes');
 
 app.get('/', (req, res) => res.redirect('/products'));
 
+// Páginas Informativas
+app.get('/faq', (req, res) => res.render('faq', { title: 'Preguntas Frecuentes' }));
+app.get('/terms', (req, res) => res.render('terms', { title: 'Términos y Condiciones' }));
+app.get('/contact', (req, res) => res.render('contact', { title: 'Contacto' }));
+
 app.use('/products', productRoutes);
 app.use('/cart', cartRoutes);
 app.use('/auth', authRoutes);

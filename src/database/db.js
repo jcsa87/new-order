@@ -145,7 +145,7 @@ const initDb = () => {
 
         const localidades = [
             ['La Plata', 1], ['Bahía Blanca', 1], ['Palermo', 2], ['Recoleta', 2],
-            ['Córdoba Capital', 3], ['Rosario', 4]
+            ['Córdoba Capital', 3], ['Rosario', 4], ['Capital', 9]
         ];
         localidades.forEach(l => {
             db.run("INSERT INTO localidad (nombre, id_provincia) VALUES (?, ?)", l);
@@ -168,15 +168,15 @@ const initDb = () => {
         const productos = [
             // Tecnología (ID 1)
             ["Smartphone Galaxy S24", "Última generación con IA integrada.", 999.99, 10, 'activo', "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?q=80&w=2070&auto=format&fit=crop", 1],
-            ["MacBook Air M3", "Potencia y portabilidad extrema.", 1299.00, 5, 'activo', "https://images.unsplash.com/photo-1517336713431-60991318231c?q=80&w=1973&auto=format&fit=crop", 1],
-            
+            ["MacBook Air M3", "Potencia y portabilidad extrema.", 1299.00, 5, 'activo', "https://images.unsplash.com/photo-1569770218135-bea267ed7e84?fm=jpg&q=60&w=3000&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fG1hY2Jvb2slMjBhaXIlMjBtM3xlbnwwfHwwfHx8MA%3D%3D", 1],
+
             // Moda (ID 2)
             ["Zapatillas Nike Air Max", "Comodidad y estilo icónico.", 120.00, 20, 'activo', "https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=2070&auto=format&fit=crop", 2],
             ["Remera Essential Black", "Algodón 100% premium.", 25.50, 50, 'activo', "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=1780&auto=format&fit=crop", 2],
 
             // Hogar (ID 3)
-            ["Lámpara Nórdica", "Diseño minimalista para tu sala.", 45.00, 15, 'activo', "https://images.unsplash.com/photo-1507473885765-e6ed657f997c?q=80&w=1974&auto=format&fit=crop", 3],
-            ["Cafetera Espresso Pro", "Tu café como en la mejor cafetería.", 180.00, 8, 'activo', "https://images.unsplash.com/photo-1517668808822-9eaa02f2a9e0?q=80&w=2069&auto=format&fit=crop", 3],
+            ["Lámpara Nórdica", "Diseño minimalista para tu sala.", 45.00, 15, 'activo', "https://plus.unsplash.com/premium_photo-1668005190411-1042cd38522e?fm=jpg&q=60&w=3000&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8JTIwbCVDMyVBMW1wYXJhfGVufDB8fDB8fHww", 3],
+            ["Cafetera Espresso Pro", "Tu café como en la mejor cafetería.", 180.00, 8, 'activo', "https://images.unsplash.com/photo-1563444195120-bd34920b35c2?fm=jpg&q=60&w=3000&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", 3],
 
             // Deportes (ID 4)
             ["Mesa de Ping Pong", "Diversión y ejercicio en casa.", 350.00, 3, 'activo', "https://images.unsplash.com/photo-1534067783941-51c9c23ecefd?q=80&w=1974&auto=format&fit=crop", 4],
@@ -196,12 +196,12 @@ const initDb = () => {
 
         // Add Test Users (admin: admin, usuario: usuario)
         // Note: Using pre-hashed bcrypt values for admin/usuario to avoid async issues in seed
-        const adminHash = '$2a$10$7R9rPXzIs.I1W.nNnO5mKOCq6Z.G0N3O6z8kK/1y4Y3nO8G1M3y.'; // 'admin'
-        const userHash = '$2a$10$Wn9rPXzIs.I1W.nNnO5mKOCq6Z.G0N3O6z8kK/1y4Y3nO8G1M3y.'; // 'usuario'
-        
+        const adminHash = '$2b$10$v2TXZuowa7KxHzf05KUKx.zLP2PW4bOt6CDomixMOCT/phI4EbNxG'; // 'admin'
+        const userHash = '$2b$10$wrpvuzgWJ0NomjXj5yr8aOm9OM6/EvBs.OWIDkWcA5com59pS2JCq'; // 'usuario'
+
         db.run(`INSERT INTO direccion (calle, numero_calle, codigo_postal, id_localidad) VALUES ('Calle Falsa', '123', '1900', 1)`);
         db.run(`INSERT INTO usuario (nombre, apellido, email, contrasena, id_direccion, id_rol) VALUES ('Admin', 'System', 'admin@hotmail.com', '${adminHash}', (SELECT MAX(id_direccion) FROM direccion), 1)`);
-        
+
         db.run(`INSERT INTO direccion (calle, numero_calle, codigo_postal, id_localidad) VALUES ('Calle Falsa', '456', '1900', 1)`);
         db.run(`INSERT INTO usuario (nombre, apellido, email, contrasena, id_direccion, id_rol) VALUES ('Usuario', 'Test', 'usuario@hotmail.com', '${userHash}', (SELECT MAX(id_direccion) FROM direccion), 2)`);
 

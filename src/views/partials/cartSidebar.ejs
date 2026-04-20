@@ -27,8 +27,8 @@
             <% } else { %>
                 <% items.forEach(item => { %>
                     <div class="flex items-center gap-4 p-4 bg-gray-50 dark:bg-sapphire-800/50 rounded-2xl border border-gray-100/50 dark:border-sapphire-800/50">
-                        <div class="w-16 h-16 bg-gradient-to-br from-primary/10 to-secondary/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                            <svg class="w-6 h-6 text-primary/40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+                        <div class="w-16 h-16 bg-white dark:bg-sapphire-800 rounded-xl overflow-hidden flex-shrink-0">
+                            <img src="<%= item.imagen %>" alt="<%= item.nombre %>" class="w-full h-full object-cover">
                         </div>
                         <div class="flex-grow min-w-0">
                             <h4 class="font-bold text-gray-900 dark:text-white truncate text-sm"><%= item.nombre %></h4>

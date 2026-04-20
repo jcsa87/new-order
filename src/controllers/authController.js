@@ -4,7 +4,9 @@ const bcrypt = require('bcryptjs');
 
 class AuthController {
     static async renderLogin(req, res) {
-        res.render('auth/login', { cartCount: 0 });
+        const error = req.query.error || null;
+        const success = req.query.registered ? "¡Registro exitoso! Ya puedes iniciar sesión con tus credenciales." : null;
+        res.render('auth/login', { cartCount: 0, error, success });
     }
 
     static async renderRegister(req, res) {
@@ -64,7 +66,7 @@ class AuthController {
                 }
             });
 
-            res.redirect('/auth/login');
+            res.redirect('/auth/login?registered=true');
         } catch (error) {
             console.error("Error en registro:", error);
             res.status(500).send("Error en el servidor al registrar");
@@ -76,13 +78,12 @@ class AuthController {
         try {
             const user = await UserModel.findByEmail(email);
             if (!user) {
-                return res.send("Credenciales inválidas");
+                return res.render('auth/login', { cartCount: 0, error: "El correo electrónico no está registrado.", success: null });
             }
 
-            // user.contrasena es el campo en DB ahora
             const isMatch = await bcrypt.compare(contrasena, user.contrasena);
             if (!isMatch) {
-                return res.send("Credenciales inválidas");
+                return res.render('auth/login', { cartCount: 0, error: "La contraseña ingresada es incorrecta.", success: null });
             }
 
             req.session.userId = user.id_usuario;
