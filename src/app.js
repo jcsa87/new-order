@@ -3,6 +3,7 @@ const path = require('path');
 const session = require('express-session');
 const SQLiteStore = require('connect-sqlite3')(session);
 require('dotenv').config();
+const CartService = require('./services/cartService');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -26,13 +27,22 @@ app.use(session({
     cookie: { maxAge: 7 * 24 * 60 * 60 * 1000 } // 1 semana
 }));
 
-// Pasar datos de usuario a todas las vistas
+// Pasar datos de usuario y carrito a todas las vistas
 app.use((req, res, next) => {
+    const items = CartService.getCart();
+    const totals = CartService.calculateTotal();
+    const cartCount = items.reduce((acc, item) => acc + item.quantity, 0);
+
     res.locals.user = req.session.userId ? {
         id: req.session.userId,
         name: req.session.userName,
         role: req.session.userRole
     } : null;
+
+    res.locals.items = items;
+    res.locals.totals = totals;
+    res.locals.cartCount = cartCount;
+
     next();
 });
 

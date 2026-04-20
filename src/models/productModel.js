@@ -6,7 +6,13 @@ const db = require('../database/db');
 class ProductModel {
     static getAll() {
         return new Promise((resolve, reject) => {
-            db.all("SELECT * FROM producto WHERE estado_producto = 'activo'", [], (err, rows) => {
+            const sql = `
+                SELECT p.*, c.nombre as categoria_nombre 
+                FROM producto p
+                JOIN categoria c ON p.id_categoria = c.id_categoria
+                WHERE p.estado_producto = 'activo'
+            `;
+            db.all(sql, [], (err, rows) => {
                 if (err) reject(err);
                 else resolve(rows);
             });
