@@ -52,20 +52,30 @@
                                     </p>
                                 </div>
 
-                                <form action="/cart/agregar" method="POST">
+                                <form action="/cart/agregar" method="POST" class="flex items-center gap-2">
                                     <input type="hidden" name="productId" value="<%= producto.id_producto %>">
+                                    
+                                    <div class="flex items-center bg-gray-50 dark:bg-sapphire-800 rounded-xl border border-gray-100 dark:border-sapphire-700 h-10 px-2">
+                                        <input type="number" 
+                                               name="cantidad" 
+                                               value="1" 
+                                               min="1" 
+                                               max="<%= producto.stock %>"
+                                               class="w-10 bg-transparent text-center font-bold text-xs focus:outline-none dark:text-white"
+                                        >
+                                    </div>
+
                                     <button type="submit"
-                                        class="p-3 rounded-2xl bg-primary text-white hover:bg-secondary active:scale-95 transition-all disabled:bg-gray-300 dark:disabled:bg-sapphire-800 disabled:cursor-not-allowed group/btn"
+                                        class="p-2.5 rounded-xl bg-primary text-white hover:bg-secondary active:scale-95 transition-all disabled:opacity-30 disabled:cursor-not-allowed group/btn"
                                         <%=producto.stock===0 ? 'disabled' : '' %>
                                         >
                                         <svg xmlns="http://www.w3.org/2000/svg"
-                                            class="w-6 h-6 group-hover/btn:rotate-12 transition-transform" fill="none"
-                                            stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"
+                                            class="w-5 h-5 group-hover/btn:rotate-12 transition-transform" fill="none"
+                                            stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"
                                             stroke-linecap="round" stroke-linejoin="round">
                                             <circle cx="8" cy="21" r="1" />
                                             <circle cx="19" cy="21" r="1" />
-                                            <path
-                                                d="M2.05 2.05h1.5l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
+                                            <path d="M2.05 2.05h1.5l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
                                         </svg>
                                     </button>
                                 </form>

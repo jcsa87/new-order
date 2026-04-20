@@ -9,6 +9,13 @@
         </a>
     </div>
     
+    <% if (errorMessage) { %>
+        <div class="p-4 mb-6 bg-red-100 border-l-4 border-red-500 text-red-700 rounded-xl font-bold flex items-center shadow-lg animate-pulse">
+            <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+            <%= errorMessage %>
+        </div>
+    <% } %>
+    
     <% if (itemsCarrito.length === 0) { %>
         <div class="text-center py-20 bg-white dark:bg-sapphire-900 rounded-3xl border border-dashed border-gray-300 dark:border-sapphire-700">
             <svg class="w-16 h-16 mx-auto mb-4 text-gray-300 dark:text-sapphire-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
@@ -30,26 +37,19 @@
                             
                             <!-- Controles de Cantidad -->
                             <div class="flex items-center mt-3 space-x-3">
-                                <div class="flex items-center bg-gray-50 dark:bg-sapphire-800 rounded-lg border border-gray-100 dark:border-sapphire-700">
-                                    <form action="/cart/actualizar" method="POST">
-                                        <input type="hidden" name="productId" value="<%= item.id_producto %>">
-                                        <input type="hidden" name="delta" value="-1">
-                                        <button type="submit" class="p-1.5 hover:text-primary transition-colors">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/></svg>
-                                        </button>
-                                    </form>
-                                    <span class="px-3 text-sm font-bold text-gray-700 dark:text-sapphire-200"><%= item.quantity %></span>
-                                    <form action="/cart/actualizar" method="POST">
-                                        <input type="hidden" name="productId" value="<%= item.id_producto %>">
-                                        <input type="hidden" name="delta" value="1">
-                                        <button type="submit" 
-                                            class="p-1.5 hover:text-primary transition-colors disabled:opacity-20 disabled:cursor-not-allowed"
-                                            <%= item.quantity >= item.stock ? 'disabled' : '' %>
-                                        >
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                                        </button>
-                                    </form>
-                                </div>
+                                <form action="/cart/actualizar" method="POST" class="flex items-center border border-gray-100 dark:border-sapphire-700 rounded-xl bg-gray-50 dark:bg-sapphire-800 overflow-hidden shadow-inner">
+                                    <input type="hidden" name="productId" value="<%= item.id_producto %>">
+                                    <button type="button" onclick="this.form.nuevaCantidad.value--; this.form.submit()" class="px-3 py-1.5 hover:bg-gray-100 dark:hover:bg-sapphire-700 transition-colors">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/></svg>
+                                    </button>
+                                    <input type="number" name="nuevaCantidad" value="<%= item.quantity %>" 
+                                        class="w-12 text-center text-sm font-bold bg-transparent focus:outline-none dark:text-sapphire-200"
+                                        onchange="this.form.submit()" min="0">
+                                    <button type="button" onclick="this.form.nuevaCantidad.value++; this.form.submit()" <%= item.quantity >= item.stock ? 'disabled' : '' %> 
+                                        class="px-3 py-1.5 hover:bg-gray-100 dark:hover:bg-sapphire-700 transition-colors disabled:opacity-30">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                                    </button>
+                                </form>
                             </div>
                         </div>
 
@@ -60,7 +60,7 @@
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                                 </button>
                             </form>
-                            <span class="font-black text-gray-900 dark:text-white text-lg">$<%= (item.precio_unitario * item.quantity).toFixed(2) %></span>
+                            <span class="font-black text-gray-900 dark:text-white text-lg">$<%= Number(item.subtotal_item).toFixed(2) %></span>
                         </div>
                     </div>
                 <% }) %>

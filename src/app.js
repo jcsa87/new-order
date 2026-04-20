@@ -30,7 +30,7 @@ app.use(session({
 // Pasar datos de usuario y carrito a todas las vistas
 app.use((req, res, next) => {
     const itemsCarrito = CarritoService.obtenerCarrito();
-    const totales = CarritoService.calcularTotales();
+    const totales = CarritoService.obtenerTotales();
     const cantidadCarrito = itemsCarrito.reduce((acc, item) => acc + item.quantity, 0);
 
     res.locals.user = req.session.userId ? {
@@ -42,6 +42,10 @@ app.use((req, res, next) => {
     res.locals.itemsCarrito = itemsCarrito;
     res.locals.totales = totales;
     res.locals.cantidadCarrito = cantidadCarrito;
+    
+    // Persistencia de estado y errores vía URL (MVC-SSR compliant)
+    res.locals.abrirCarrito = req.query.cart === 'open';
+    res.locals.errorMessage = req.query.error || null;
 
     next();
 });
