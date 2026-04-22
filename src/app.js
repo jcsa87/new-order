@@ -45,7 +45,10 @@ app.use((req, res, next) => {
     
     // Persistencia de estado y errores vía URL (MVC-SSR compliant)
     res.locals.abrirCarrito = req.query.cart === 'open';
-    res.locals.errorMessage = req.query.error || null;
+    
+    // Normalizar error (si hay múltiples, tomar el último)
+    const error = req.query.error;
+    res.locals.errorMessage = Array.isArray(error) ? error[error.length - 1] : (error || null);
 
     next();
 });

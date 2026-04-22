@@ -20,18 +20,36 @@ class CarritoController {
         const qty = parseInt(cantidad) || 1;
 
         try {
-            await ProductoModel.verificarStock(productId, qty); // 1. verificarStock(cantidad)
+            const id = parseInt(productId);
+            const itemsCarrito = CarritoService.obtenerCarrito();
+            const itemExistente = itemsCarrito.find(item => item.id_producto === id);
+            const cantidadTotal = (itemExistente ? itemExistente.quantity : 0) + qty;
 
-            const producto = await ProductoModel.obtenerPorId(productId);
+            await ProductoModel.verificarStock(id, cantidadTotal); 
+
+            const producto = await ProductoModel.obtenerPorId(id);
             if (producto) {
-                CarritoService.añadirProducto(producto, qty); // 2. añadirProducto()
+                CarritoService.añadirProducto(producto, qty);
             }
 
-            res.redirect('/products?cart=open');
+            const referer = req.get('Referer') || '/products';
+            const separator = referer.includes('?') ? '&' : '?';
+            res.redirect(referer + separator + 'cart=open');
         } catch (error) {
-            // Caso Alternativo: Stock Insuficiente 
             console.error("[CONTROLLER] Error:", error.message);
-            res.redirect('/products?error=' + encodeURIComponent(error.message));
+            
+            // Limpiar el referer de parámetros previos de error para evitar duplicados
+            const referer = req.get('Referer') || '/products';
+            
+            try {
+                const url = new URL(referer, `http://${req.headers.host}`);
+                url.searchParams.delete('error');
+                url.searchParams.set('error', error.message);
+                url.searchParams.set('cart', 'open');
+                res.redirect(url.pathname + url.search);
+            } catch (e) {
+                res.redirect(`/products?error=${encodeURIComponent(error.message)}&cart=open`);
+            }
         }
     }
 
@@ -46,8 +64,15 @@ class CarritoController {
         } catch (error) {
             console.error("[CONTROLLER] Error:", error.message);
             const referer = req.get('Referer') || '/cart';
-            const separator = referer.includes('?') ? '&' : '?';
-            res.redirect(referer + separator + 'error=' + encodeURIComponent(error.message) + '&cart=open');
+            try {
+                const url = new URL(referer, `http://${req.headers.host}`);
+                url.searchParams.delete('error');
+                url.searchParams.set('error', error.message);
+                url.searchParams.set('cart', 'open');
+                res.redirect(url.pathname + url.search);
+            } catch (e) {
+                res.redirect(`/cart?error=${encodeURIComponent(error.message)}&cart=open`);
+            }
         }
     }
 

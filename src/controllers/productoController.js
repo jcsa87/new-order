@@ -22,6 +22,22 @@ class ProductoController {
             res.status(500).send("Error interno del servidor");
         }
     }
+
+    static async verDetalle(req, res) {
+        try {
+            const id = req.params.id;
+            const producto = await ProductoModel.obtenerPorId(id);
+            
+            if (!producto) {
+                return res.status(404).send("Producto no encontrado");
+            }
+
+            res.render('product-detail', { producto });
+        } catch (error) {
+            console.error("Error al obtener detalle del producto:", error);
+            res.status(500).send("Error interno del servidor");
+        }
+    }
 }
 
 module.exports = ProductoController;
