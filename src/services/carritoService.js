@@ -1,6 +1,6 @@
 class CarritoService {
     constructor() {
-        this.items = []; // En una app real, esto podría estar en sesión o DB temporal
+        this.items = [];
     }
 
     añadirProducto(producto, cantidad) {
@@ -16,7 +16,7 @@ class CarritoService {
                 id_producto: producto.id_producto,
                 nombre: producto.nombre,
                 precio_unitario: producto.precio_unitario,
-                subtotal_item: cant * producto.precio_unitario, 
+                subtotal_item: cant * producto.precio_unitario,
                 imagen: producto.imagen,
                 stock: producto.stock,
                 quantity: cant
@@ -30,10 +30,10 @@ class CarritoService {
     actualizarCantidad(id_producto, nueva_cantidad) {
         const id = parseInt(id_producto);
         const qty = parseInt(nueva_cantidad);
-        
+
         // Precondición: El producto ya debe existir en el carrito
         const item = this.items.find(i => i.id_producto === id);
-        
+
         if (item) {
             // Validar stock si estamos incrementando
             if (qty > item.quantity) {
@@ -49,7 +49,7 @@ class CarritoService {
             if (item.quantity <= 0) {
                 this.quitarItem(id);
             }
-            
+
             this.recalcularTotales();
         }
         return this.items;
@@ -89,6 +89,4 @@ class CarritoService {
     }
 }
 
-// Para efectos del Sprint 1, usaremos una instancia única (Singleton) 
-// para simular la sesión del usuario.
 module.exports = new CarritoService();

@@ -7,9 +7,9 @@ class CarritoController {
         const totales = CarritoService.obtenerTotales();
         const cantidadCarrito = itemsCarrito.reduce((acc, item) => acc + item.quantity, 0);
 
-        res.render('cart', { 
-            itemsCarrito, 
-            totales, 
+        res.render('cart', {
+            itemsCarrito,
+            totales,
             cantidadCarrito,
             error: req.query.error || null
         });
@@ -18,19 +18,18 @@ class CarritoController {
     static async agregarItem(req, res) {
         const { productId, cantidad } = req.body;
         const qty = parseInt(cantidad) || 1;
-        
+
         try {
-            // Pasos según Diagrama de Secuencia
             await ProductoModel.verificarStock(productId, qty); // 1. verificarStock(cantidad)
-            
+
             const producto = await ProductoModel.obtenerPorId(productId);
             if (producto) {
                 CarritoService.añadirProducto(producto, qty); // 2. añadirProducto()
             }
-            
+
             res.redirect('/products?cart=open');
         } catch (error) {
-            // Caso Alternativo: Stock Insuficiente (Diagrama 3)
+            // Caso Alternativo: Stock Insuficiente 
             console.error("[CONTROLLER] Error:", error.message);
             res.redirect('/products?error=' + encodeURIComponent(error.message));
         }
@@ -38,7 +37,7 @@ class CarritoController {
 
     static actualizarCantidad(req, res) {
         const { productId, nuevaCantidad } = req.body;
-        
+
         try {
             CarritoService.actualizarCantidad(productId, parseInt(nuevaCantidad));
             const referer = req.get('Referer') || '/cart';
@@ -59,7 +58,7 @@ class CarritoController {
         } catch (error) {
             console.error("[CONTROLLER] Error:", error.message);
         }
-        
+
         const referer = req.get('Referer') || '/cart';
         const separator = referer.includes('?') ? '&' : '?';
         res.redirect(referer + separator + 'cart=open');
