@@ -47,6 +47,22 @@ class ProductoModel {
             });
         });
     }
+
+    static async obtenerCatalogoAgrupado() {
+        const productos = await this.obtenerActivos();
+        
+        // Agrupar por categoría
+        const catalogoAgrupado = productos.reduce((acc, producto) => {
+            const categoria = producto.categoria_nombre || 'Sin Categoría';
+            if (!acc[categoria]) {
+                acc[categoria] = [];
+            }
+            acc[categoria].push(producto);
+            return acc;
+        }, {});
+        
+        return catalogoAgrupado;
+    }
 }
 
 module.exports = ProductoModel;

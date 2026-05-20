@@ -1,4 +1,3 @@
-const ProductoModel = require('../models/productoModel');
 const CarritoService = require('../services/carritoService');
 
 class CarritoController {
@@ -16,31 +15,23 @@ class CarritoController {
     }
 
     static async agregarItem(req, res) {
+        // 1. Recibe el evento del sistema de la vista (formulario HTML)
         const { productId, cantidad } = req.body;
-        const qty = parseInt(cantidad) || 1;
 
         try {
-            const id = parseInt(productId);
-            const itemsCarrito = CarritoService.obtenerCarrito();
-            const itemExistente = itemsCarrito.find(item => item.id_producto === id);
-            const cantidadTotal = (itemExistente ? itemExistente.quantity : 0) + qty;
-
-            await ProductoModel.verificarStock(id, cantidadTotal); 
-
-            const producto = await ProductoModel.obtenerPorId(id);
-            if (producto) {
-                CarritoService.añadirProducto(producto, qty);
-            }
+            // 2. DELEGA la responsabilidad al Dominio/Servicio
+            await CarritoService.agregarItem(productId, cantidad);
 
             const referer = req.get('Referer') || '/products';
             const separator = referer.includes('?') ? '&' : '?';
+            // 3. Responde a la interfaz (Redirección)
             res.redirect(referer + separator + 'cart=open');
         } catch (error) {
             console.error("[CONTROLLER] Error:", error.message);
-            
+
             // Limpiar el referer de parámetros previos de error para evitar duplicados
             const referer = req.get('Referer') || '/products';
-            
+
             try {
                 const url = new URL(referer, `http://${req.headers.host}`);
                 url.searchParams.delete('error');
@@ -53,11 +44,11 @@ class CarritoController {
         }
     }
 
-    static actualizarCantidad(req, res) {
+    static async actualizarCantidad(req, res) {
         const { productId, nuevaCantidad } = req.body;
 
         try {
-            CarritoService.actualizarCantidad(productId, parseInt(nuevaCantidad));
+            await CarritoService.actualizarCantidad(productId, parseInt(nuevaCantidad));
             const referer = req.get('Referer') || '/cart';
             const separator = referer.includes('?') ? '&' : '?';
             res.redirect(referer + separator + 'cart=open');

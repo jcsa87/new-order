@@ -1,18 +1,9 @@
-const ProductoModel = require('../models/productoModel');
-const CategoriaModel = require('../models/categoriaModel');
-const CarritoService = require('../services/carritoService');
+const ProductoService = require('../services/productoService');
 
 class ProductoController {
     static async listarProductos(req, res) {
         try {
-            const productos = await ProductoModel.obtenerActivos();
-            const categorias = await CategoriaModel.obtenerTodas();
-            
-            // Agrupar productos por categoría
-            const categoriasAgrupadas = categorias.map(cat => ({
-                ...cat,
-                productos: productos.filter(p => p.id_categoria === cat.id_categoria)
-            })).filter(cat => cat.productos.length > 0);
+            const categoriasAgrupadas = await ProductoService.obtenerCatalogoAgrupado();
 
             res.render('catalog', { 
                 categorias: categoriasAgrupadas
@@ -26,7 +17,7 @@ class ProductoController {
     static async verDetalle(req, res) {
         try {
             const id = req.params.id;
-            const producto = await ProductoModel.obtenerPorId(id);
+            const producto = await ProductoService.obtenerDetalle(id);
             
             if (!producto) {
                 return res.status(404).send("Producto no encontrado");

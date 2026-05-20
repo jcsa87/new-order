@@ -5,10 +5,19 @@ const dbPath = path.join(__dirname, '../../database.db');
 const db = new sqlite3.Database(dbPath);
 
 const initDb = () => {
-    db.serialize(() => {
+    // Comprobar si la base de datos ya tiene las tablas creadas
+    db.get("SELECT name FROM sqlite_master WHERE type='table' AND name='usuario'", (err, row) => {
+        if (row) {
+            console.log("La base de datos ya está inicializada. Manteniendo datos existentes.");
+            db.run("PRAGMA foreign_keys = ON");
+            return;
+        }
 
-        // Usar PRAGMA synchronous y journal_mode para estabilidad
-        db.run("PRAGMA foreign_keys = OFF");
+        console.log("Inicializando base de datos por primera vez...");
+        db.serialize(() => {
+
+            // Usar PRAGMA synchronous y journal_mode para estabilidad
+            db.run("PRAGMA foreign_keys = OFF");
 
         const tables = [
             'detalle_pedido', 'pedido', 'producto', 'categoria',
@@ -210,6 +219,7 @@ const initDb = () => {
             else console.log("Base de datos cargada con éxito.");
         });
     });
+    }); // Cierre del callback de db.get
 };
 
 initDb();

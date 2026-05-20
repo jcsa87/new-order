@@ -12,6 +12,15 @@
             </p>
         </div>
 
+        <% if (locals.error) { %>
+            <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/30 p-4 rounded-2xl flex items-center space-x-3 animate-in fade-in slide-in-from-top-4 duration-500 mb-8">
+                <svg class="w-5 h-5 text-red-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <p class="text-sm font-medium text-red-600 dark:text-red-400"><%= error %></p>
+            </div>
+        <% } %>
+
         <form action="/auth/register" method="POST" class="space-y-8">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
                 <!-- Datos Personales -->
@@ -48,32 +57,32 @@
                 <div class="space-y-5">
                     <h3 class="text-lg font-bold text-secondary flex items-center">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                        Dirección Obligatoria
+                        Dirección (Opcional)
                     </h3>
 
                     <div class="form-group">
-                        <label for="calle" class="text-xs font-bold text-gray-400 dark:text-sapphire-500 uppercase tracking-wider mb-1 block pl-1">Calle</label>
-                        <input type="text" id="calle" name="calle" required placeholder="Av. Principal" class="w-full px-4 py-3 bg-gray-50 dark:bg-sapphire-800/50 border border-gray-200 dark:border-sapphire-700 rounded-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition-all">
+                        <label for="calle" class="text-xs font-bold text-gray-400 dark:text-sapphire-500 uppercase tracking-wider mb-1 block pl-1">Calle <span class="normal-case text-[10px] font-normal text-gray-400">(Opcional)</span></label>
+                        <input type="text" id="calle" name="calle" placeholder="Av. Principal" class="w-full px-4 py-3 bg-gray-50 dark:bg-sapphire-800/50 border border-gray-200 dark:border-sapphire-700 rounded-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition-all">
                     </div>
 
                     <div class="grid grid-cols-2 gap-4">
                         <div class="form-group">
-                            <label for="numero_calle" class="text-xs font-bold text-gray-400 dark:text-sapphire-500 uppercase tracking-wider mb-1 block pl-1">Número</label>
-                            <input type="text" id="numero_calle" name="numero_calle" required placeholder="123" class="w-full px-4 py-3 bg-gray-50 dark:bg-sapphire-800/50 border border-gray-200 dark:border-sapphire-700 rounded-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition-all">
+                            <label for="numero_calle" class="text-xs font-bold text-gray-400 dark:text-sapphire-500 uppercase tracking-wider mb-1 block pl-1">Número <span class="normal-case text-[10px] font-normal text-gray-400">(Opcional)</span></label>
+                            <input type="text" id="numero_calle" name="numero_calle" placeholder="123" class="w-full px-4 py-3 bg-gray-50 dark:bg-sapphire-800/50 border border-gray-200 dark:border-sapphire-700 rounded-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition-all">
                         </div>
                         <div class="form-group">
-                            <label for="codigo_postal" class="text-xs font-bold text-gray-400 dark:text-sapphire-500 uppercase tracking-wider mb-1 block pl-1">C.P.</label>
-                            <input type="text" id="codigo_postal" name="codigo_postal" required placeholder="1000" class="w-full px-4 py-3 bg-gray-50 dark:bg-sapphire-800/50 border border-gray-200 dark:border-sapphire-700 rounded-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition-all">
+                            <label for="codigo_postal" class="text-xs font-bold text-gray-400 dark:text-sapphire-500 uppercase tracking-wider mb-1 block pl-1">C.P. <span class="normal-case text-[10px] font-normal text-gray-400">(Opcional)</span></label>
+                            <input type="text" id="codigo_postal" name="codigo_postal" placeholder="1000" class="w-full px-4 py-3 bg-gray-50 dark:bg-sapphire-800/50 border border-gray-200 dark:border-sapphire-700 rounded-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition-all">
                         </div>
                     </div>
 
                     <div class="grid grid-cols-2 gap-4">
                         <div class="form-group">
-                            <label for="nro_piso" class="text-xs font-bold text-gray-400 dark:text-sapphire-500 uppercase tracking-wider mb-1 block pl-1">Piso</label>
+                            <label for="nro_piso" class="text-xs font-bold text-gray-400 dark:text-sapphire-500 uppercase tracking-wider mb-1 block pl-1">Piso <span class="normal-case text-[10px] font-normal text-gray-400">(Opcional)</span></label>
                             <input type="text" id="nro_piso" name="nro_piso" placeholder="4" class="w-full px-4 py-3 bg-gray-50 dark:bg-sapphire-800/50 border border-gray-200 dark:border-sapphire-700 rounded-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition-all">
                         </div>
                         <div class="form-group">
-                            <label for="nro_departamento" class="text-xs font-bold text-gray-400 dark:text-sapphire-500 uppercase tracking-wider mb-1 block pl-1">Depto</label>
+                            <label for="nro_departamento" class="text-xs font-bold text-gray-400 dark:text-sapphire-500 uppercase tracking-wider mb-1 block pl-1">Depto <span class="normal-case text-[10px] font-normal text-gray-400">(Opcional)</span></label>
                             <input type="text" id="nro_departamento" name="nro_departamento" placeholder="B" class="w-full px-4 py-3 bg-gray-50 dark:bg-sapphire-800/50 border border-gray-200 dark:border-sapphire-700 rounded-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition-all">
                         </div>
                     </div>
@@ -81,7 +90,7 @@
                     <div class="grid grid-cols-2 gap-4">
                         <div class="form-group">
                             <label for="id_provincia" class="text-xs font-bold text-gray-400 dark:text-sapphire-500 uppercase tracking-wider mb-1 block pl-1">Provincia</label>
-                            <select id="id_provincia" name="id_provincia" class="w-full px-4 py-3 bg-gray-50 dark:bg-sapphire-800/50 border border-gray-200 dark:border-sapphire-700 rounded-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition-all appearance-none cursor-pointer">
+                            <select id="id_provincia" name="id_provincia" required class="w-full px-4 py-3 bg-gray-50 dark:bg-sapphire-800/50 border border-gray-200 dark:border-sapphire-700 rounded-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition-all appearance-none cursor-pointer">
                                 <% provincias.forEach(prov => { %>
                                     <option value="<%= prov.id_provincia %>"><%= prov.nombre %></option>
                                 <% }) %>
@@ -89,7 +98,7 @@
                         </div>
                         <div class="form-group">
                             <label for="id_localidad" class="text-xs font-bold text-gray-400 dark:text-sapphire-500 uppercase tracking-wider mb-1 block pl-1">Localidad</label>
-                            <select id="id_localidad" name="id_localidad" class="w-full px-4 py-3 bg-gray-50 dark:bg-sapphire-800/50 border border-gray-200 dark:border-sapphire-700 rounded-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition-all appearance-none cursor-pointer">
+                            <select id="id_localidad" name="id_localidad" required class="w-full px-4 py-3 bg-gray-50 dark:bg-sapphire-800/50 border border-gray-200 dark:border-sapphire-700 rounded-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition-all appearance-none cursor-pointer">
                                 <% localidades.forEach(loc => { %>
                                     <option value="<%= loc.id_localidad %>"><%= loc.nombre %></option>
                                 <% }) %>

@@ -10,6 +10,27 @@ class UsuarioModel {
         });
     }
 
+    static async verificarUsuario(datosRegistro) {
+        const { email, nombre, apellido, contrasena, id_provincia, id_localidad } = datosRegistro;
+
+        // Flujo Alternativo: Campos incompletos
+        if (!email || !nombre || !apellido || !contrasena || !id_provincia || !id_localidad) {
+            throw new Error("Campo obligatorio incompleto. Por favor completa todos los datos obligatorios.");
+        }
+
+        // Flujo Alternativo: Datos incorrectos (usuario duplicado)
+        const usuarioExistente = await this.buscarPorEmail(email);
+        if (usuarioExistente) {
+            throw new Error("Los datos son incorrectos: El correo electrónico ya está registrado.");
+        }
+
+        return true;
+    }
+
+    static verificarAuth(session) {
+        return !!(session && session.userId);
+    }
+
     /**
      * Crear un usuario con dirección obligatoria
      * @param {Object} datosUsuario - { nombre, apellido, email, contrasena, id_rol, address: { calle, numero_calle, nro_piso, nro_departamento, codigo_postal, id_localidad } }
@@ -61,33 +82,7 @@ class UsuarioModel {
         });
     }
 
-    // Helpers para selección geográfica
-    static obtenerProvincias() {
-        return new Promise((resolve, reject) => {
-            db.all("SELECT * FROM provincia ORDER BY nombre", [], (err, rows) => {
-                if (err) reject(err);
-                else resolve(rows);
-            });
-        });
-    }
 
-    static obtenerLocalidadesPorProvincia(idProvincia) {
-        return new Promise((resolve, reject) => {
-            db.all("SELECT * FROM localidad WHERE id_provincia = ? ORDER BY nombre", [idProvincia], (err, rows) => {
-                if (err) reject(err);
-                else resolve(rows);
-            });
-        });
-    }
-
-    static obtenerRoles() {
-        return new Promise((resolve, reject) => {
-            db.all("SELECT * FROM rol WHERE estado = 'activo'", [], (err, rows) => {
-                if (err) reject(err);
-                else resolve(rows);
-            });
-        });
-    }
 }
 
 module.exports = UsuarioModel;

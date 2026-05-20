@@ -1,25 +1,37 @@
+const ProductoModel = require('../models/productoModel');
+
 class CarritoService {
     constructor() {
         this.items = [];
     }
 
-    añadirProducto(producto, cantidad) {
-        // Precondición: El stock ya fue verificado por el controlador antes de esta llamada
-        const cant = parseInt(cantidad);
-        const itemExistente = this.items.find(item => item.id_producto === producto.id_producto);
+    async agregarItem(id_producto, cantidad) {
+        const id = parseInt(id_producto);
+        const qty = parseInt(cantidad) || 1;
+
+        const itemExistente = this.items.find(item => item.id_producto === id);
+        const cantidadTotal = (itemExistente ? itemExistente.quantity : 0) + qty;
+
+        // Validar stock con el modelo (esta responsabilidad ahora es del servicio)
+        await ProductoModel.verificarStock(id, cantidadTotal);
+
+        const producto = await ProductoModel.obtenerPorId(id);
+        if (!producto) {
+            throw new Error("Producto no encontrado");
+        }
 
         if (itemExistente) {
-            itemExistente.quantity += cant;
+            itemExistente.quantity += qty;
             itemExistente.subtotal_item = itemExistente.quantity * itemExistente.precio_unitario;
         } else {
             this.items.push({
                 id_producto: producto.id_producto,
                 nombre: producto.nombre,
                 precio_unitario: producto.precio_unitario,
-                subtotal_item: cant * producto.precio_unitario,
+                subtotal_item: qty * producto.precio_unitario,
                 imagen: producto.imagen,
                 stock: producto.stock,
-                quantity: cant
+                quantity: qty
             });
         }
 
@@ -27,7 +39,7 @@ class CarritoService {
         return this.items;
     }
 
-    actualizarCantidad(id_producto, nueva_cantidad) {
+    async actualizarCantidad(id_producto, nueva_cantidad) {
         const id = parseInt(id_producto);
         const qty = parseInt(nueva_cantidad);
 
@@ -35,12 +47,9 @@ class CarritoService {
         const item = this.items.find(i => i.id_producto === id);
 
         if (item) {
-            // Validar stock si estamos incrementando
+            // Reutilizamos el método de validación único y centralizado del modelo
             if (qty > item.quantity) {
-                const diferencia = qty - item.quantity;
-                if (item.stock < qty) {
-                    throw new Error(`No puedes superar el stock de ${item.stock} unidades.`);
-                }
+                await ProductoModel.verificarStock(id, qty);
             }
 
             item.quantity = qty;
@@ -48,9 +57,9 @@ class CarritoService {
 
             if (item.quantity <= 0) {
                 this.quitarItem(id);
+            } else {
+                this.recalcularTotales();
             }
-
-            this.recalcularTotales();
         }
         return this.items;
     }
@@ -86,6 +95,17 @@ class CarritoService {
     vaciar() {
         this.items = [];
         this.recalcularTotales();
+    }
+
+    verificarSesionYCarrito(session) {
+        const UsuarioModel = require('../models/usuarioModel');
+        const isAuth = UsuarioModel.verificarAuth(session);
+        const isEmpty = this.items.length === 0;
+
+        return {
+            autenticado: isAuth,
+            vacio: isEmpty
+        };
     }
 }
 

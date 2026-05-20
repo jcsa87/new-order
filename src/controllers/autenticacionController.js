@@ -1,5 +1,4 @@
-const UsuarioModel = require('../models/usuarioModel');
-const bcrypt = require('bcryptjs');
+const AutenticacionService = require('../services/autenticacionService');
 
 class AutenticacionController {
     static async mostrarLogin(req, res) {
@@ -10,14 +9,14 @@ class AutenticacionController {
 
     static async mostrarRegistro(req, res) {
         try {
-            const provincias = await UsuarioModel.obtenerProvincias();
-            // Para simplificar, obtenemos las localidades de la primera provincia
-            const localidades = await UsuarioModel.obtenerLocalidadesPorProvincia(provincias[0]?.id_provincia || 1);
+            const provincias = await AutenticacionService.obtenerProvincias();
+            const localidades = await AutenticacionService.obtenerLocalidades(provincias[0]?.id_provincia || 1);
             
             res.render('auth/register', { 
                 cantidadCarrito: 0,
                 provincias,
-                localidades
+                localidades,
+                error: null
             });
         } catch (error) {
             console.error(error);
@@ -28,7 +27,7 @@ class AutenticacionController {
     static async obtenerLocalidades(req, res) {
         try {
             const { id } = req.params;
-            const localidades = await UsuarioModel.obtenerLocalidadesPorProvincia(id);
+            const localidades = await AutenticacionService.obtenerLocalidades(id);
             res.json(localidades);
         } catch (error) {
             res.status(500).json({ error: "Error al obtener localidades" });
@@ -36,54 +35,38 @@ class AutenticacionController {
     }
 
     static async procesarRegistro(req, res) {
-        const { 
-            nombre, apellido, email, contrasena, id_rol,
-            calle, numero_calle, nro_piso, nro_departamento, codigo_postal, id_localidad 
-        } = req.body;
-
         try {
-            const usuarioExistente = await UsuarioModel.buscarPorEmail(email);
-            if (usuarioExistente) {
-                return res.send("El usuario ya existe");
-            }
+            // Acción 2 (CU): Verifica los datos ingresados
+            await AutenticacionService.verificarUsuario(req.body);
 
-            const hashedPassword = await bcrypt.hash(contrasena, 10);
-            
-            await UsuarioModel.crear({
-                nombre,
-                apellido,
-                email,
-                contrasena: hashedPassword,
-                id_rol: id_rol || 2, // 2 = Cliente por defecto
-                address: {
-                    calle,
-                    numero_calle,
-                    nro_piso,
-                    nro_departamento,
-                    codigo_postal,
-                    id_localidad: parseInt(id_localidad)
-                }
-            });
+            // Acción 3 (CU): Registra los datos del nuevo usuario
+            await AutenticacionService.registrarUsuario(req.body);
 
+            // Acción 3.1 (CU): Muestra mje "¡Usuario registrado con éxito!" (a través de query param)
             res.redirect('/auth/login?registered=true');
         } catch (error) {
-            console.error("Error en registro:", error);
-            res.status(500).send("Error en el servidor al registrar");
+            console.error("Error en registro:", error.message);
+            // Representa flujos alternativos 2.2.1 y 2.4.1 (Mostrar mensaje de error en la misma vista)
+            try {
+                const provincias = await AutenticacionService.obtenerProvincias();
+                const localidades = await AutenticacionService.obtenerLocalidades(req.body.id_provincia || provincias[0]?.id_provincia || 1);
+                
+                res.status(400).render('auth/register', {
+                    cantidadCarrito: 0,
+                    provincias,
+                    localidades,
+                    error: error.message
+                });
+            } catch (err) {
+                res.status(500).send("Error interno al cargar la página de registro.");
+            }
         }
     }
 
     static async procesarLogin(req, res) {
         const { email, contrasena } = req.body;
         try {
-            const usuario = await UsuarioModel.buscarPorEmail(email);
-            if (!usuario) {
-                return res.render('auth/login', { cantidadCarrito: 0, error: "El correo electrónico no está registrado.", success: null });
-            }
-
-            const esIgual = await bcrypt.compare(contrasena, usuario.contrasena);
-            if (!esIgual) {
-                return res.render('auth/login', { cantidadCarrito: 0, error: "La contraseña ingresada es incorrecta.", success: null });
-            }
+            const usuario = await AutenticacionService.autenticarUsuario(email, contrasena);
 
             req.session.userId = usuario.id_usuario;
             req.session.userRole = usuario.id_rol;
@@ -91,8 +74,8 @@ class AutenticacionController {
 
             res.redirect('/');
         } catch (error) {
-            console.error("Error en login:", error);
-            res.status(500).send("Error en el servidor");
+            console.error("Error en login:", error.message);
+            res.render('auth/login', { cantidadCarrito: 0, error: error.message, success: null });
         }
     }
 
