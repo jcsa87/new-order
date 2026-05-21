@@ -117,7 +117,7 @@ const initDb = () => {
             fecha_creacion TEXT DEFAULT CURRENT_TIMESTAMP,
             estado TEXT DEFAULT 'pendiente',
             subtotal_pedido REAL,
-            descuento_applied REAL DEFAULT 0,
+            descuento_aplicado REAL DEFAULT 0,
             total REAL,
             id_usuario INTEGER,
             id_metodo_pago INTEGER,
