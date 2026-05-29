@@ -9,6 +9,14 @@ class MetodoPagoModel {
             });
         });
     }
+
+    /**
+     * Obtiene el listado de métodos de pago (alias singular que coincide con el Diagrama de Clases).
+     * @returns {Promise<Array>}
+     */
+    static obtenerMetodoPago() {
+        return this.obtenerMetodosPago();
+    }
 }
 
 module.exports = MetodoPagoModel;

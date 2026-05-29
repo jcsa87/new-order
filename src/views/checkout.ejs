@@ -1,0 +1,470 @@
+<%- include('partials/header') %>
+
+<div class="max-w-5xl mx-auto px-4 py-8">
+    <div class="mb-8">
+        <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white">Confirmar Pedido</h2>
+        <p class="text-sm text-gray-500 dark:text-sapphire-400 mt-2">Revisa tu información de compra y confirma el pedido para finalizar.</p>
+    </div>
+
+    <% if (error) { %>
+        <div id="errorAlert" class="p-4 mb-6 bg-red-100 border-l-4 border-red-500 text-red-700 rounded-xl font-bold flex items-center justify-between shadow-lg animate-pulse relative">
+            <div class="flex items-center">
+                <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                <%= error %>
+            </div>
+            <button onclick="this.parentElement.remove()" class="text-red-500 hover:text-red-700 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+        </div>
+    <% } %>
+
+    <form action="/checkout" method="POST" class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+        <!-- Input oculto para la dirección del usuario -->
+        <input type="hidden" name="id_direccion" value="<%= id_direccion %>">
+
+        <!-- Columnas Izquierdas (Detalles del Checkout) -->
+        <div class="lg:col-span-2 space-y-6">
+            <!-- 1. Dirección de Entrega -->
+            <div class="p-6 bg-white dark:bg-sapphire-900 rounded-3xl border border-gray-100 dark:border-sapphire-800 shadow-sm">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="p-2 bg-primary/10 text-primary rounded-xl">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 dark:text-white">Dirección de Entrega</h3>
+                </div>
+
+                <% if (id_direccion) { %>
+                    <div class="p-4 bg-gray-50 dark:bg-sapphire-950 rounded-2xl border border-gray-100 dark:border-sapphire-800/80">
+                        <p class="font-semibold text-gray-700 dark:text-sapphire-200"><%= usuario.nombre %> <%= usuario.apellido %></p>
+                        <p class="text-sm text-gray-500 dark:text-sapphire-400 mt-1"><%= direccionCompleta %></p>
+                    </div>
+                    <div class="mt-4 flex items-center gap-2">
+                        <input type="checkbox" id="modificar_direccion_chk" class="rounded border-gray-300 text-primary focus:ring-primary">
+                        <label for="modificar_direccion_chk" class="text-sm font-bold text-gray-700 dark:text-sapphire-200 cursor-pointer">Modificar dirección de entrega</label>
+                    </div>
+                    <input type="hidden" name="modificar_direccion" id="modificar_direccion_input" value="false">
+                <% } else { %>
+                    <div class="p-4 bg-yellow-50 dark:bg-yellow-950/20 border border-yellow-200 dark:border-yellow-900/50 rounded-2xl text-yellow-800 dark:text-yellow-300 text-sm mb-4">
+                        💡 No tienes una dirección registrada. Por favor ingresa una dirección de entrega obligatoria para proceder.
+                    </div>
+                    <input type="hidden" name="modificar_direccion" id="modificar_direccion_input" value="true">
+                <% } %>
+
+                <!-- Formulario de Dirección (Visible por defecto si no hay dirección, colapsado si ya tiene) -->
+                <div id="direccionForm" class="<%= id_direccion ? 'hidden' : '' %> mt-6 space-y-4 border-t border-gray-100 dark:border-sapphire-800 pt-4">
+                    <h4 class="text-md font-bold text-gray-800 dark:text-sapphire-100 mb-2">Nueva Dirección</h4>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Calle *</label>
+                            <input type="text" name="calle" id="calle" class="w-full px-4 py-3 bg-gray-50 dark:bg-sapphire-950 border border-gray-250 dark:border-sapphire-800 rounded-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-primary outline-none" <%= id_direccion ? '' : 'required' %>>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Número / Altura *</label>
+                            <input type="text" name="numero_calle" id="numero_calle" class="w-full px-4 py-3 bg-gray-50 dark:bg-sapphire-950 border border-gray-250 dark:border-sapphire-800 rounded-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-primary outline-none" <%= id_direccion ? '' : 'required' %>>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Piso</label>
+                            <input type="text" name="nro_piso" id="nro_piso" class="w-full px-4 py-3 bg-gray-50 dark:bg-sapphire-950 border border-gray-250 dark:border-sapphire-800 rounded-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-primary outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Dpto</label>
+                            <input type="text" name="nro_departamento" id="nro_departamento" class="w-full px-4 py-3 bg-gray-50 dark:bg-sapphire-950 border border-gray-250 dark:border-sapphire-800 rounded-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-primary outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Cód. Postal *</label>
+                            <input type="text" name="codigo_postal" id="codigo_postal" class="w-full px-4 py-3 bg-gray-50 dark:bg-sapphire-950 border border-gray-250 dark:border-sapphire-800 rounded-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-primary outline-none" <%= id_direccion ? '' : 'required' %>>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Provincia *</label>
+                            <select name="id_provincia" id="id_provincia" onchange="cargarLocalidades(this.value)" class="w-full px-4 py-3 bg-gray-50 dark:bg-sapphire-950 border border-gray-250 dark:border-sapphire-800 rounded-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-primary outline-none" <%= id_direccion ? '' : 'required' %>>
+                                <option value="">Selecciona una provincia</option>
+                                <% provincias.forEach(p => { %>
+                                    <option value="<%= p.id_provincia %>"><%= p.nombre %></option>
+                                <% }) %>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Localidad *</label>
+                            <select name="id_localidad" id="id_localidad" class="w-full px-4 py-3 bg-gray-50 dark:bg-sapphire-950 border border-gray-250 dark:border-sapphire-800 rounded-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-primary outline-none" <%= id_direccion ? '' : 'required' %>>
+                                <option value="">Selecciona una provincia primero</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. Método de Envío -->
+            <div class="p-6 bg-white dark:bg-sapphire-900 rounded-3xl border border-gray-100 dark:border-sapphire-800 shadow-sm">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="p-2 bg-primary/10 text-primary rounded-xl">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10M21 16V10a2 2 0 00-2-2h-3l-2.73-2.73a1 1 0 00-.71-.27H12"/></svg>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 dark:text-white">Método de Envío</h3>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <% metodosEnvio.forEach((envio, index) => { %>
+                        <label class="relative flex p-4 bg-gray-50 dark:bg-sapphire-950 border border-gray-150 dark:border-sapphire-800 rounded-2xl cursor-pointer hover:border-primary dark:hover:border-primary focus-within:ring-2 focus-within:ring-primary transition-all select-none">
+                            <input type="radio" name="id_metodo_envio" value="<%= envio.id_metodo_envio %>" 
+                                   class="sr-only" <%= index === 0 ? 'checked' : '' %>
+                                   data-costo="<%= envio.costo_base %>"
+                                   onchange="actualizarTotales()">
+                            <div class="flex flex-col justify-between h-full w-full">
+                                <div>
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="font-bold text-gray-900 dark:text-white"><%= envio.nombre %></span>
+                                        <div class="w-4 h-4 rounded-full border-2 border-gray-300 dark:border-sapphire-700 flex items-center justify-center selector-dot">
+                                            <div class="w-1.5 h-1.5 rounded-full bg-white hidden inner-dot"></div>
+                                        </div>
+                                    </div>
+                                    <p class="text-xs text-gray-400 dark:text-sapphire-500 leading-normal mb-4"><%= envio.descripcion %></p>
+                                </div>
+                                <div class="text-sm font-black text-primary dark:text-accent">
+                                    <%= envio.costo_base > 0 ? '$' + Number(envio.costo_base).toFixed(2) : 'Gratis' %>
+                                </div>
+                            </div>
+                        </label>
+                    <% }) %>
+                </div>
+            </div>
+
+            <!-- 3. Método de Pago y Campos Específicos (Strategy Pattern) -->
+            <div class="p-6 bg-white dark:bg-sapphire-900 rounded-3xl border border-gray-100 dark:border-sapphire-800 shadow-sm">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="p-2 bg-primary/10 text-primary rounded-xl">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 dark:text-white">Método de Pago</h3>
+                </div>
+                
+                <!-- Opciones de radio button -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <% metodosPago.forEach((pago, index) => { %>
+                        <label class="relative flex p-4 bg-gray-50 dark:bg-sapphire-950 border border-gray-150 dark:border-sapphire-800 rounded-2xl cursor-pointer hover:border-primary dark:hover:border-primary focus-within:ring-2 focus-within:ring-primary transition-all select-none">
+                            <input type="radio" name="id_metodo_pago" value="<%= pago.id_metodo_pago %>" 
+                                   class="sr-only" <%= index === 0 ? 'checked' : '' %>
+                                   onchange="togglePaymentForms()">
+                            <div class="flex flex-col justify-between h-full w-full">
+                                <div>
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="font-bold text-gray-900 dark:text-white"><%= pago.nombre %></span>
+                                        <div class="w-4 h-4 rounded-full border-2 border-gray-300 dark:border-sapphire-700 flex items-center justify-center selector-dot">
+                                            <div class="w-1.5 h-1.5 rounded-full bg-white hidden inner-dot"></div>
+                                        </div>
+                                    </div>
+                                    <p class="text-[11px] text-gray-400 dark:text-sapphire-500 leading-normal"><%= pago.descripcion %></p>
+                                </div>
+                            </div>
+                        </label>
+                    <% }) %>
+                </div>
+
+                <!-- Formularios Específicos de las Estrategias de Pago (Toggled vía JS) -->
+                <div class="border-t border-gray-100 dark:border-sapphire-800 pt-4">
+                    
+                    <!-- 1. PagoTarjetaForm -->
+                    <div id="pagoTarjetaForm" class="payment-details-form space-y-4">
+                        <div class="p-4 bg-primary/5 rounded-2xl border border-primary/20 flex gap-3">
+                            <div class="text-primary text-xl">💳</div>
+                            <div>
+                                <h4 class="text-sm font-bold text-gray-800 dark:text-sapphire-100">Pago con Tarjeta de Crédito</h4>
+                                <p class="text-xs text-gray-500 dark:text-sapphire-400">Completa los datos de tu tarjeta para procesar el pago simulado.</p>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Tipo de Tarjeta *</label>
+                                <select name="tipoTarjeta" id="tipoTarjeta" class="w-full px-4 py-3 bg-gray-50 dark:bg-sapphire-950 border border-gray-250 dark:border-sapphire-800 rounded-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-primary outline-none">
+                                    <option value="">Selecciona una tarjeta</option>
+                                    <option value="Visa">Visa</option>
+                                    <option value="Mastercard">Mastercard</option>
+                                    <option value="American Express">American Express</option>
+                                    <option value="Cabal">Cabal</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Número de Tarjeta *</label>
+                                <input type="text" name="nroTarjeta" id="nroTarjeta" placeholder="4517 0812 3456 7890" maxlength="16" class="w-full px-4 py-3 bg-gray-50 dark:bg-sapphire-950 border border-gray-250 dark:border-sapphire-800 rounded-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-primary outline-none">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Nombre del Titular *</label>
+                                <input type="text" name="nombreTitular" id="nombreTitular" placeholder="Juan Pérez" class="w-full px-4 py-3 bg-gray-50 dark:bg-sapphire-950 border border-gray-250 dark:border-sapphire-800 rounded-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-primary outline-none">
+                            </div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Vto. (MM/AA) *</label>
+                                    <input type="text" name="fechaVencimiento" id="fechaVencimiento" placeholder="12/28" maxlength="5" class="w-full px-4 py-3 bg-gray-50 dark:bg-sapphire-950 border border-gray-250 dark:border-sapphire-800 rounded-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-primary outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">CVV *</label>
+                                    <input type="password" name="cvv" id="cvv" placeholder="123" maxlength="4" class="w-full px-4 py-3 bg-gray-50 dark:bg-sapphire-950 border border-gray-250 dark:border-sapphire-800 rounded-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-primary outline-none">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Cuotas *</label>
+                                <select name="cuotas" id="cuotas" class="w-full px-4 py-3 bg-gray-50 dark:bg-sapphire-950 border border-gray-250 dark:border-sapphire-800 rounded-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-primary outline-none">
+                                    <option value="1">1 cuota sin interés</option>
+                                    <option value="3">3 cuotas sin interés</option>
+                                    <option value="6">6 cuotas sin interés</option>
+                                    <option value="12">12 cuotas fijas</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. PagoTransferenciaForm -->
+                    <div id="pagoTransferenciaForm" class="payment-details-form space-y-4 hidden">
+                        <div class="p-4 bg-green-500/5 rounded-2xl border border-green-500/20 flex gap-3">
+                            <div class="text-green-500 text-xl">🏦</div>
+                            <div>
+                                <h4 class="text-sm font-bold text-gray-800 dark:text-sapphire-100">Pago por Transferencia Bancaria</h4>
+                                <p class="text-xs text-gray-500 dark:text-sapphire-400">Introduce el CBU de origen de 22 dígitos para la aprobación simulada.</p>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">CBU de Origen (22 dígitos) *</label>
+                            <input type="text" name="cbuOrigen" id="cbuOrigen" placeholder="0170099920000001234567" maxlength="22" class="w-full px-4 py-3 bg-gray-50 dark:bg-sapphire-950 border border-gray-250 dark:border-sapphire-800 rounded-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-primary outline-none">
+                        </div>
+                    </div>
+
+                    <!-- 3. PagoMercadoPagoForm -->
+                    <div id="pagoMercadoPagoForm" class="payment-details-form space-y-4 hidden">
+                        <div class="p-4 bg-sky-500/5 rounded-2xl border border-sky-500/20 flex gap-3">
+                            <div class="text-sky-500 text-xl">💙</div>
+                            <div>
+                                <h4 class="text-sm font-bold text-gray-800 dark:text-sapphire-100">Pago con Mercado Pago</h4>
+                                <p class="text-xs text-gray-500 dark:text-sapphire-400">Introduce el correo electrónico vinculado a tu billetera virtual.</p>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Email de la Cuenta *</label>
+                            <input type="email" name="emailCuenta" id="emailCuenta" placeholder="nombre@gmail.com" class="w-full px-4 py-3 bg-gray-50 dark:bg-sapphire-950 border border-gray-250 dark:border-sapphire-800 rounded-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-primary outline-none">
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Columna Derecha (Resumen de Compra) -->
+        <div class="lg:col-span-1">
+            <div class="bg-gray-900 dark:bg-sapphire-900 p-8 rounded-3xl text-white shadow-2xl shadow-gray-900/20 sticky top-24">
+                <h3 class="text-xl font-bold mb-6 border-b border-white/10 pb-4">Detalle de Compra</h3>
+
+                <!-- Productos en la orden -->
+                <div class="max-h-48 overflow-y-auto mb-6 pr-2 space-y-3 custom-scrollbar">
+                    <% itemsCarrito.forEach(item => { %>
+                        <div class="flex justify-between items-center gap-3">
+                            <div class="min-w-0 flex-grow">
+                                <p class="text-xs font-bold truncate text-gray-200"><%= item.nombre %></p>
+                                <p class="text-[10px] text-gray-400 mt-0.5"><%= item.quantity %> x $<%= item.precio_unitario %></p>
+                            </div>
+                            <span class="text-xs font-bold text-white flex-shrink-0">$<%= Number(item.subtotal_item).toFixed(2) %></span>
+                        </div>
+                    <% }) %>
+                </div>
+
+                <!-- Totales del Pedido -->
+                <div class="space-y-4 mb-8 border-t border-white/10 pt-4">
+                    <div class="flex justify-between text-xs text-gray-400">
+                        <span>Subtotal</span>
+                        <span class="text-white">$<%= totales.subtotal %></span>
+                    </div>
+                    <div class="flex justify-between text-xs text-gray-400">
+                        <span>Impuestos (IVA 21%)</span>
+                        <span class="text-white">$<%= totales.impuestos %></span>
+                    </div>
+                    <div class="flex justify-between text-xs text-gray-400">
+                        <span>Costo de Envío</span>
+                        <span class="text-white font-medium" id="envioCostoText">$0.00</span>
+                    </div>
+                    <div class="pt-4 border-t border-white/10 flex justify-between items-end">
+                        <span class="text-xs uppercase tracking-widest font-bold text-accent">Total</span>
+                        <span class="text-3xl font-black text-white" id="totalFinalText">$0.00</span>
+                    </div>
+                </div>
+
+                <!-- Botón de Confirmación -->
+                <button type="submit" class="w-full py-4 bg-primary rounded-2xl font-black text-lg hover:bg-secondary active:scale-95 transition-all shadow-lg shadow-primary/20">
+                    Confirmar Pedido
+                </button>
+
+                <p class="text-[10px] text-center mt-4 text-gray-500 uppercase tracking-widest leading-relaxed">
+                    Sujeto a verificación de stock <br> y términos de servicio.
+                </p>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    const subtotal = parseFloat("<%= totales.subtotal %>");
+    const impuestos = parseFloat("<%= totales.impuestos %>");
+
+    function actualizarTotales() {
+        const selectedEnvio = document.querySelector('input[name="id_metodo_envio"]:checked');
+        if (!selectedEnvio) return;
+
+        const costoEnvio = parseFloat(selectedEnvio.dataset.costo || 0);
+        
+        const envioCostoText = document.getElementById('envioCostoText');
+        const totalFinalText = document.getElementById('totalFinalText');
+
+        envioCostoText.textContent = costoEnvio > 0 ? `$${costoEnvio.toFixed(2)}` : 'Gratis';
+        
+        const total = subtotal + impuestos + costoEnvio;
+        totalFinalText.textContent = `$${total.toFixed(2)}`;
+    }
+
+    // --- CARGAR LOCALIDADES DINÁMICAMENTE ---
+    async function cargarLocalidades(provinciaId) {
+        const selectorLocalidad = document.getElementById('id_localidad');
+        if (!provinciaId) {
+            selectorLocalidad.innerHTML = '<option value="">Selecciona una provincia primero</option>';
+            return;
+        }
+        
+        selectorLocalidad.innerHTML = '<option value="">Cargando localidades...</option>';
+        
+        try {
+            const res = await fetch(`/checkout/localidades?provinciaId=${provinciaId}`);
+            const localidades = await res.json();
+            
+            selectorLocalidad.innerHTML = '<option value="">Selecciona una localidad</option>';
+            localidades.forEach(loc => {
+                const opt = document.createElement('option');
+                opt.value = loc.id_localidad;
+                opt.textContent = loc.nombre;
+                selectorLocalidad.appendChild(opt);
+            });
+        } catch (err) {
+            console.error("Error al cargar localidades:", err);
+            selectorLocalidad.innerHTML = '<option value="">Error cargando localidades</option>';
+        }
+    }
+
+    // --- TOGGLE DEL FORMULARIO DE DIRECCIÓN (CASO 4) ---
+    const checkboxModificar = document.getElementById('modificar_direccion_chk');
+    const direccionForm = document.getElementById('direccionForm');
+    const inputModificar = document.getElementById('modificar_direccion_input');
+
+    if (checkboxModificar) {
+        checkboxModificar.addEventListener('change', function() {
+            if (this.checked) {
+                direccionForm.classList.remove('hidden');
+                inputModificar.value = 'true';
+                direccionForm.querySelectorAll('input, select').forEach(el => {
+                    if (el.id !== 'nro_piso' && el.id !== 'nro_departamento') {
+                        el.setAttribute('required', 'true');
+                    }
+                });
+                const provSelect = document.getElementById('id_provincia');
+                if (provSelect.value) {
+                    cargarLocalidades(provSelect.value);
+                }
+            } else {
+                direccionForm.classList.add('hidden');
+                inputModificar.value = 'false';
+                direccionForm.querySelectorAll('input, select').forEach(el => {
+                    el.removeAttribute('required');
+                });
+            }
+        });
+    }
+
+    // --- TOGGLE DE FORMULARIOS DE PAGO DINÁMICOS ---
+    function togglePaymentForms() {
+        const selectedPago = document.querySelector('input[name="id_metodo_pago"]:checked');
+        if (!selectedPago) return;
+
+        const id = parseInt(selectedPago.value);
+        
+        // Ocultar todos los formularios
+        document.getElementById('pagoTarjetaForm').classList.add('hidden');
+        document.getElementById('pagoTransferenciaForm').classList.add('hidden');
+        document.getElementById('pagoMercadoPagoForm').classList.add('hidden');
+
+        // Quitar required
+        document.querySelectorAll('.payment-details-form input, .payment-details-form select').forEach(input => {
+            input.removeAttribute('required');
+        });
+
+        // Mostrar formulario correspondiente y agregar required
+        if (id === 1) {
+            document.getElementById('pagoTarjetaForm').classList.remove('hidden');
+            document.getElementById('pagoTarjetaForm').querySelectorAll('input, select').forEach(input => input.setAttribute('required', 'true'));
+        } else if (id === 2) {
+            document.getElementById('pagoTransferenciaForm').classList.remove('hidden');
+            document.getElementById('pagoTransferenciaForm').querySelectorAll('input, select').forEach(input => input.setAttribute('required', 'true'));
+        } else if (id === 3) {
+            document.getElementById('pagoMercadoPagoForm').classList.remove('hidden');
+            document.getElementById('pagoMercadoPagoForm').querySelectorAll('input, select').forEach(input => input.setAttribute('required', 'true'));
+        }
+    }
+
+    // Auto-formatear vencimiento MM/AA
+    const vencInput = document.getElementById('fechaVencimiento');
+    if (vencInput) {
+        vencInput.addEventListener('input', function(e) {
+            let val = e.target.value.replace(/\D/g, '');
+            if (val.length > 2) {
+                val = val.substring(0, 2) + '/' + val.substring(2, 4);
+            }
+            e.target.value = val;
+        });
+    }
+
+    // Inicializar totales y campos al cargar
+    document.addEventListener('DOMContentLoaded', () => {
+        actualizarTotales();
+        togglePaymentForms();
+    });
+</script>
+
+<style>
+    .custom-scrollbar::-webkit-scrollbar {
+        width: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+        background: rgba(255,255,255,0.05);
+        border-radius: 2px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: rgba(255,255,255,0.2);
+        border-radius: 2px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: rgba(255,255,255,0.4);
+    }
+    
+    label:has(input[type="radio"]:checked) {
+        border-color: #4560ba !important;
+        background-color: rgba(69, 96, 186, 0.05);
+    }
+    .dark label:has(input[type="radio"]:checked) {
+        border-color: #6a80c8 !important;
+        background-color: rgba(106, 128, 200, 0.1);
+    }
+    
+    input[type="radio"]:checked ~ div .selector-dot {
+        border-color: #4560ba !important;
+        background-color: #4560ba !important;
+    }
+    .dark input[type="radio"]:checked ~ div .selector-dot {
+        border-color: #6a80c8 !important;
+        background-color: #6a80c8 !important;
+    }
+    input[type="radio"]:checked ~ div .selector-dot .inner-dot {
+        display: block !important;
+    }
+</style>
+
+<%- include('partials/footer') %>

@@ -97,15 +97,24 @@ class CarritoService {
         this.recalcularTotales();
     }
 
+    // Aliases matching the UML Class and Sequence diagrams
+    async agregaritem(id_producto, cantidad) {
+        return await this.agregarItem(id_producto, cantidad);
+    }
+
+    quitaritem(id_producto) {
+        return this.quitarItem(id_producto);
+    }
+
+    vaciarCarrito() {
+        this.vaciar();
+    }
+
     verificarSesionYCarrito(session) {
         const UsuarioModel = require('../models/usuarioModel');
         const isAuth = UsuarioModel.verificarAuth(session);
         const isEmpty = this.items.length === 0;
-
-        return {
-            autenticado: isAuth,
-            vacio: isEmpty
-        };
+        return isAuth && !isEmpty;
     }
 }
 

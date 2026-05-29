@@ -9,6 +9,10 @@ class MetodoEnvioModel {
             });
         });
     }
+
+    static obtenerMetodoEnvio() {
+        return this.obtenerMetodosEnvio();
+    }
 }
 
 module.exports = MetodoEnvioModel;

@@ -1,11 +1,26 @@
 const db = require('../database/db');
 
 class UsuarioModel {
+    constructor(row = {}) {
+        this.id_usuario = row.id_usuario;
+        this.nombre = row.nombre;
+        this.apellido = row.apellido;
+        this.email = row.email;
+        this.contrasena = row.contrasena;
+        this.id_direccion = row.id_direccion;
+        this.id_rol = row.id_rol;
+    }
+
+    /**
+     * Busca un usuario por email e instancia la clase.
+     * @param {string} email - Correo del usuario.
+     * @returns {Promise<UsuarioModel|null>} Instancia de UsuarioModel.
+     */
     static buscarPorEmail(email) {
         return new Promise((resolve, reject) => {
             db.get("SELECT * FROM usuario WHERE email = ?", [email], (err, row) => {
                 if (err) reject(err);
-                else resolve(row);
+                else resolve(row ? new UsuarioModel(row) : null);
             });
         });
     }
@@ -73,16 +88,97 @@ class UsuarioModel {
         });
     }
 
+    /**
+     * Obtiene un usuario instanciado por su ID.
+     * @param {number} id - ID del usuario.
+     * @returns {Promise<UsuarioModel|null>} Instancia de UsuarioModel.
+     */
     static obtenerPorId(id) {
         return new Promise((resolve, reject) => {
             db.get("SELECT * FROM usuario WHERE id_usuario = ?", [id], (err, row) => {
                 if (err) reject(err);
-                else resolve(row);
+                else resolve(row ? new UsuarioModel(row) : null);
             });
         });
     }
 
+    /**
+     * Guarda una nueva dirección como método de instancia, actualizando la referencia de la instancia y la BD.
+     * @param {Object} datosDireccion - Datos de la dirección.
+     * @returns {Promise<number>} El id_direccion de la dirección creada.
+     */
+    async guardarDireccion(datosDireccion) {
+        const id_direccion = await UsuarioModel.guardarDireccion(this.id_usuario, datosDireccion);
+        this.id_direccion = id_direccion;
+        return id_direccion;
+    }
 
+    /**
+     * Guarda una nueva dirección para el usuario y la asocia a su cuenta (estático, para compatibilidad).
+     * @param {number} id_usuario - ID del usuario.
+     * @param {Object} datosDireccion - { calle, numero_calle, nro_piso, nro_departamento, codigo_postal, id_localidad }
+     * @returns {Promise<number>} El id_direccion de la dirección creada.
+     */
+    static guardarDireccion(id_usuario, datosDireccion) {
+        return new Promise((resolve, reject) => {
+            db.serialize(() => {
+                db.run("BEGIN TRANSACTION");
+
+                const { calle, numero_calle, nro_piso, nro_departamento, codigo_postal, id_localidad } = datosDireccion;
+                db.run(
+                    `INSERT INTO direccion (calle, numero_calle, nro_piso, nro_departamento, codigo_postal, id_localidad) 
+                     VALUES (?, ?, ?, ?, ?, ?)`,
+                    [calle, numero_calle, nro_piso, nro_departamento, codigo_postal, parseInt(id_localidad)],
+                    function(err) {
+                        if (err) {
+                            db.run("ROLLBACK");
+                            return reject(err);
+                        }
+
+                        const id_direccion = this.lastID;
+
+                        db.run(
+                            `UPDATE usuario SET id_direccion = ? WHERE id_usuario = ?`,
+                            [id_direccion, id_usuario],
+                            function(err) {
+                                if (err) {
+                                    db.run("ROLLBACK");
+                                    return reject(err);
+                                }
+                                db.run("COMMIT");
+                                resolve(id_direccion);
+                            }
+                        );
+                    }
+                );
+            });
+        });
+    }
+
+    /**
+     * Inicia sesión del usuario verificando las credenciales.
+     * @param {string} email - Correo del usuario.
+     * @param {string} contrasena - Contraseña.
+     * @returns {Promise<boolean>}
+     */
+    static async iniciarSesion(email, contrasena) {
+        try {
+            const usuario = await this.buscarPorEmail(email);
+            if (!usuario) return false;
+            const bcrypt = require('bcryptjs');
+            return await bcrypt.compare(contrasena, usuario.contrasena);
+        } catch (err) {
+            return false;
+        }
+    }
+
+    /**
+     * Obtiene el Carrito activo para el usuario.
+     * @returns {Object} CarritoService singleton.
+     */
+    static obtenerCarrito() {
+        return require('../services/carritoService');
+    }
 }
 
 module.exports = UsuarioModel;

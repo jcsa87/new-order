@@ -1,12 +1,23 @@
 const db = require('../database/db');
 
 class PedidoModel {
-    static crearPedido(datosPedido) {
+    constructor(id_pedido) {
+        this.id_pedido = id_pedido;
+    }
+
+    /**
+     * Instancia de cambiarEstado para cumplir con la firma del diagrama de clases.
+     */
+    cambiarEstado(estado) {
+        return PedidoModel.cambiarEstado(this.id_pedido, estado);
+    }
+
+    static crearPedido(datos) {
         return new Promise((resolve, reject) => {
             db.serialize(() => {
                 db.run("BEGIN TRANSACTION");
 
-                const { id_usuario, id_metodo_pago, id_metodo_envio, id_direccion, subtotal_pedido, descuento_aplicado, total, items } = datosPedido;
+                const { id_usuario, id_metodo_pago, id_metodo_envio, id_direccion, subtotal_pedido, descuento_aplicado, total, items } = datos;
                 const fecha_creacion = new Date().toISOString();
                 const estado = 'Pendiente'; // Estado inicial según Larman
                 
@@ -65,6 +76,33 @@ class PedidoModel {
             db.all(sql, [id_usuario], (err, rows) => {
                 if (err) reject(err);
                 else resolve(rows);
+            });
+        });
+    }
+
+    /**
+     * Elimina un pedido y sus detalles asociados en una transacción (compensación por falla de stock).
+     * @param {number} id_pedido - ID del pedido a eliminar.
+     * @returns {Promise<boolean>}
+     */
+    static eliminarPedido(id_pedido) {
+        return new Promise((resolve, reject) => {
+            db.serialize(() => {
+                db.run("BEGIN TRANSACTION");
+                db.run("DELETE FROM detalle_pedido WHERE id_pedido = ?", [id_pedido], (err) => {
+                    if (err) {
+                        db.run("ROLLBACK");
+                        return reject(err);
+                    }
+                    db.run("DELETE FROM pedido WHERE id_pedido = ?", [id_pedido], function(err) {
+                        if (err) {
+                            db.run("ROLLBACK");
+                            return reject(err);
+                        }
+                        db.run("COMMIT");
+                        resolve(true);
+                    });
+                });
             });
         });
     }
