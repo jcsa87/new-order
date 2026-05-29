@@ -194,6 +194,84 @@ class PedidoController {
         }
         res.render('order-success', { id_pedido });
     }
+
+    /**
+     * Lista todos los pedidos del usuario autenticado
+     */
+    static async listarPedidosUsuario(req, res) {
+        try {
+            const isAuth = UsuarioModel.verificarAuth(req.session);
+            if (!isAuth) {
+                return res.redirect('/auth/login?error=Debes iniciar sesion para ver tus pedidos');
+            }
+
+            const id_usuario = req.session.userId;
+            const PedidoModel = require('../models/pedidoModel');
+            const pedidos = await PedidoModel.obtenerPedidosPorUsuario(id_usuario);
+
+            res.render('mis-pedidos', { pedidos, error: req.query.error || null });
+        } catch (error) {
+            console.error("Error al listar pedidos:", error);
+            res.status(500).send("Error interno del servidor");
+        }
+    }
+
+    /**
+     * Muestra el detalle de un pedido específico
+     */
+    static async verDetallePedido(req, res) {
+        try {
+            const isAuth = UsuarioModel.verificarAuth(req.session);
+            if (!isAuth) {
+                return res.redirect('/auth/login?error=Debes iniciar sesion para ver el detalle');
+            }
+
+            const id_usuario = req.session.userId;
+            const id_pedido = req.params.id;
+            const PedidoModel = require('../models/pedidoModel');
+
+            const pedido = await PedidoModel.obtenerPedidoPorId(id_pedido);
+
+            if (!pedido) {
+                return res.redirect('/pedidos?error=Pedido no encontrado');
+            }
+
+            // Validar que el pedido pertenece al usuario
+            if (pedido.id_usuario !== id_usuario) {
+                return res.redirect('/pedidos?error=No tienes permiso para ver este pedido');
+            }
+
+            const detalles = await PedidoModel.obtenerDetallesPorPedido(id_pedido);
+            
+            // Obtener entidades adicionales para mostrar la info completa
+            const metodosEnvio = await MetodoEnvioModel.obtenerMetodosEnvio();
+            const metodoEnvio = metodosEnvio.find(m => m.id_metodo_envio === pedido.id_metodo_envio) || null;
+            
+            const metodosPago = await MetodoPagoModel.obtenerMetodosPago();
+            const metodoPago = metodosPago.find(m => m.id_metodo_pago === pedido.id_metodo_pago) || null;
+
+            let direccionCompleta = 'No especificada';
+            if (pedido.id_direccion) {
+                const direccionInstance = await DireccionModel.obtenerPorId(pedido.id_direccion);
+                if (direccionInstance) {
+                    direccionCompleta = direccionInstance.obtenerDireccionCompleta();
+                }
+            }
+
+            res.render('detalle-pedido', {
+                pedido,
+                detalles,
+                metodoEnvio,
+                metodoPago,
+                direccionCompleta,
+                error: req.query.error || null
+            });
+
+        } catch (error) {
+            console.error("Error al obtener detalle del pedido:", error);
+            res.status(500).send("Error interno del servidor");
+        }
+    }
 }
 
 module.exports = PedidoController;

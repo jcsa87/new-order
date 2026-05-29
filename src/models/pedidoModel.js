@@ -80,6 +80,31 @@ class PedidoModel {
         });
     }
 
+    static obtenerPedidoPorId(id_pedido) {
+        return new Promise((resolve, reject) => {
+            const sql = `SELECT * FROM pedido WHERE id_pedido = ?`;
+            db.get(sql, [id_pedido], (err, row) => {
+                if (err) reject(err);
+                else resolve(row);
+            });
+        });
+    }
+
+    static obtenerDetallesPorPedido(id_pedido) {
+        return new Promise((resolve, reject) => {
+            const sql = `
+                SELECT dp.*, p.nombre as producto_nombre, p.imagen_url as producto_imagen, p.descripcion as producto_descripcion
+                FROM detalle_pedido dp
+                JOIN producto p ON dp.id_producto = p.id_producto
+                WHERE dp.id_pedido = ?
+            `;
+            db.all(sql, [id_pedido], (err, rows) => {
+                if (err) reject(err);
+                else resolve(rows);
+            });
+        });
+    }
+
     /**
      * Elimina un pedido y sus detalles asociados en una transacción (compensación por falla de stock).
      * @param {number} id_pedido - ID del pedido a eliminar.

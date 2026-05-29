@@ -1,0 +1,84 @@
+<%- include('partials/header') %>
+
+<div class="max-w-5xl mx-auto px-4 py-12">
+    <div class="flex items-center justify-between mb-8">
+        <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">
+            Mis Pedidos
+        </h2>
+    </div>
+
+    <% if (error) { %>
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6" role="alert">
+            <span class="block sm:inline"><%= error %></span>
+        </div>
+    <% } %>
+
+    <% if (pedidos && pedidos.length > 0) { %>
+        <div class="bg-white dark:bg-sapphire-900 rounded-3xl shadow-sm border border-gray-150 dark:border-sapphire-800 overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-gray-50 dark:bg-sapphire-950/50 text-gray-500 dark:text-sapphire-400 text-xs uppercase tracking-wider">
+                            <th class="px-6 py-4 font-bold border-b border-gray-150 dark:border-sapphire-800">Nº Pedido</th>
+                            <th class="px-6 py-4 font-bold border-b border-gray-150 dark:border-sapphire-800">Fecha</th>
+                            <th class="px-6 py-4 font-bold border-b border-gray-150 dark:border-sapphire-800">Total</th>
+                            <th class="px-6 py-4 font-bold border-b border-gray-150 dark:border-sapphire-800">Estado</th>
+                            <th class="px-6 py-4 font-bold border-b border-gray-150 dark:border-sapphire-800 text-right">Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-150 dark:divide-sapphire-800">
+                        <% pedidos.forEach(pedido => { 
+                            const fechaObj = new Date(pedido.fecha_creacion);
+                            const fechaString = fechaObj.toLocaleDateString('es-ES', { year: 'numeric', month: 'short', day: 'numeric' });
+                        %>
+                            <tr class="hover:bg-gray-50 dark:hover:bg-sapphire-800/50 transition-colors">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="font-bold text-gray-900 dark:text-white">#<%= pedido.id_pedido %></span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-gray-600 dark:text-sapphire-200">
+                                    <%= fechaString %>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap font-semibold text-gray-900 dark:text-white">
+                                    $<%= (pedido.total || 0).toFixed(2) %>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <% if (pedido.estado === 'Pendiente') { %>
+                                        <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800 dark:bg-yellow-900/40 dark:text-yellow-400">
+                                            <%= pedido.estado %>
+                                        </span>
+                                    <% } else if (pedido.estado === 'Enviado' || pedido.estado === 'Completado') { %>
+                                        <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-400">
+                                            <%= pedido.estado %>
+                                        </span>
+                                    <% } else { %>
+                                        <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300">
+                                            <%= pedido.estado %>
+                                        </span>
+                                    <% } %>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-right">
+                                    <a href="/pedidos/<%= pedido.id_pedido %>" class="text-primary hover:text-secondary font-bold text-sm bg-primary/10 hover:bg-primary/20 dark:bg-primary/20 dark:hover:bg-primary/30 px-4 py-2 rounded-lg transition-colors">
+                                        Ver Detalle
+                                    </a>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    <% } else { %>
+        <div class="text-center py-20 bg-white dark:bg-sapphire-900 rounded-3xl border border-gray-150 dark:border-sapphire-800 shadow-sm">
+            <svg class="mx-auto h-16 w-16 text-gray-400 dark:text-sapphire-500 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Aún no tienes pedidos</h3>
+            <p class="text-gray-500 dark:text-sapphire-300 mb-6 max-w-sm mx-auto">Parece que todavía no has realizado ninguna compra con nosotros.</p>
+            <a href="/products" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-xl text-white bg-primary hover:bg-secondary transition-colors">
+                Explorar Productos
+            </a>
+        </div>
+    <% } %>
+</div>
+
+<%- include('partials/footer') %>
