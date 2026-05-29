@@ -23,7 +23,6 @@
                             <th class="px-6 py-4 font-bold border-b border-gray-150 dark:border-sapphire-800">Fecha</th>
                             <th class="px-6 py-4 font-bold border-b border-gray-150 dark:border-sapphire-800">Total</th>
                             <th class="px-6 py-4 font-bold border-b border-gray-150 dark:border-sapphire-800">Estado</th>
-                            <th class="px-6 py-4 font-bold border-b border-gray-150 dark:border-sapphire-800 text-right">Acción</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-150 dark:divide-sapphire-800">
@@ -55,11 +54,6 @@
                                             <%= pedido.estado %>
                                         </span>
                                     <% } %>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-right">
-                                    <a href="/pedidos/<%= pedido.id_pedido %>" class="text-primary hover:text-secondary font-bold text-sm bg-primary/10 hover:bg-primary/20 dark:bg-primary/20 dark:hover:bg-primary/30 px-4 py-2 rounded-lg transition-colors">
-                                        Ver Detalle
-                                    </a>
                                 </td>
                             </tr>
                         <% }) %>
