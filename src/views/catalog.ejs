@@ -9,84 +9,94 @@
         </p>
     </section>
 
-    <% categorias.forEach(categoria=> { %>
-        <div class="mb-16">
-            <div class="flex items-center gap-4 mb-8">
-                <h2 class="text-2xl font-bold text-gray-900 dark:text-white">
-                    <%= categoria.nombre %>
-                </h2>
-                <div class="h-[1px] flex-grow bg-gray-200 dark:bg-sapphire-800"></div>
-                <span class="text-sm font-medium text-gray-400">
-                    <%= categoria.productos.length %> productos
-                </span>
-            </div>
+    <% if (categorias.length === 0) { %>
+        <div class="text-center py-20 px-4">
+            <svg class="w-16 h-16 mx-auto text-gray-300 dark:text-sapphire-700 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+            </svg>
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">No hay productos disponibles</h3>
+            <p class="text-gray-500 dark:text-sapphire-400">Estamos actualizando nuestro catálogo. ¡Vuelve pronto!</p>
+        </div>
+    <% } else { %>
+        <% categorias.forEach(categoria=> { %>
+            <div class="mb-16">
+                <div class="flex items-center gap-4 mb-8">
+                    <h2 class="text-2xl font-bold text-gray-900 dark:text-white">
+                        <%= categoria.nombre %>
+                    </h2>
+                    <div class="h-[1px] flex-grow bg-gray-200 dark:bg-sapphire-800"></div>
+                    <span class="text-sm font-medium text-gray-400">
+                        <%= categoria.productos.length %> productos
+                    </span>
+                </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                <% categoria.productos.forEach(producto=> { %>
-                    <article
-                        class="group bg-white dark:bg-sapphire-900 border border-gray-200 dark:border-sapphire-800 rounded-3xl overflow-hidden hover:shadow-2xl hover:shadow-primary/10 transition-all duration-300 flex flex-col">
-                        <!-- Product Image with Fallback -->
-                        <a href="/products/<%= producto.id_producto %>" class="relative h-56 overflow-hidden block">
-                            <img src="<%= producto.imagen || 'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=2070&auto=format&fit=crop' %>"
-                                alt="<%= producto.nombre %>"
-                                class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                        </a>
-
-                        <!-- Product Info -->
-                        <div class="p-6 flex-grow flex flex-col">
-                            <a href="/products/<%= producto.id_producto %>" class="block">
-                                <h3
-                                    class="text-xl font-bold mb-2 text-gray-900 dark:text-white group-hover:text-primary transition-colors">
-                                    <%= producto.nombre %>
-                                </h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                    <% categoria.productos.forEach(producto=> { %>
+                        <article
+                            class="group bg-white dark:bg-sapphire-900 border border-gray-200 dark:border-sapphire-800 rounded-3xl overflow-hidden hover:shadow-2xl hover:shadow-primary/10 transition-all duration-300 flex flex-col">
+                            <!-- Product Image with Fallback -->
+                            <a href="/products/<%= producto.id_producto %>" class="relative h-56 overflow-hidden block">
+                                <img src="<%= producto.imagen || 'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=2070&auto=format&fit=crop' %>"
+                                    alt="<%= producto.nombre %>"
+                                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                             </a>
-                            <p class="text-sm text-gray-500 dark:text-sapphire-400 mb-6 line-clamp-2">
-                                <%= producto.descripcion %>
-                            </p>
 
-                            <div class="mt-auto flex items-center justify-between">
-                                <div>
-                                    <span class="text-2xl font-black text-gray-900 dark:text-white">$<%=
-                                            producto.precio_unitario %></span>
-                                    <p
-                                        class="text-[10px] <%= producto.stock > 0 ? 'text-green-500' : 'text-red-500' %> uppercase font-bold tracking-tighter">
-                                        Stock: <%= producto.stock > 0 ? 'Disponible' : 'Agotado' %>
-                                    </p>
-                                </div>
+                            <!-- Product Info -->
+                            <div class="p-6 flex-grow flex flex-col">
+                                <a href="/products/<%= producto.id_producto %>" class="block">
+                                    <h3
+                                        class="text-xl font-bold mb-2 text-gray-900 dark:text-white group-hover:text-primary transition-colors">
+                                        <%= producto.nombre %>
+                                    </h3>
+                                </a>
+                                <p class="text-sm text-gray-500 dark:text-sapphire-400 mb-6 line-clamp-2">
+                                    <%= producto.descripcion %>
+                                </p>
 
-                                <form action="/cart/agregar" method="POST" class="flex items-center gap-2">
-                                    <input type="hidden" name="productId" value="<%= producto.id_producto %>">
-                                    
-                                    <div class="flex items-center bg-gray-50 dark:bg-sapphire-800 rounded-xl border border-gray-100 dark:border-sapphire-700 h-10 px-2">
-                                        <input type="number" 
-                                               name="cantidad" 
-                                               value="1" 
-                                               min="1" 
-                                               max="<%= producto.stock %>"
-                                               class="w-10 bg-transparent text-center font-bold text-xs focus:outline-none dark:text-white"
-                                        >
+                                <div class="mt-auto flex items-center justify-between">
+                                    <div>
+                                        <span class="text-2xl font-black text-gray-900 dark:text-white">$<%=
+                                                producto.precio_unitario %></span>
+                                        <p
+                                            class="text-[10px] <%= producto.stock > 0 ? 'text-green-500' : 'text-red-500' %> uppercase font-bold tracking-tighter">
+                                            Stock: <%= producto.stock > 0 ? 'Disponible' : 'Agotado' %>
+                                        </p>
                                     </div>
 
-                                    <button type="submit"
-                                        class="p-2.5 rounded-xl bg-primary text-white hover:bg-secondary active:scale-95 transition-all disabled:opacity-30 disabled:cursor-not-allowed group/btn"
-                                        <%=producto.stock===0 ? 'disabled' : '' %>
-                                        >
-                                        <svg xmlns="http://www.w3.org/2000/svg"
-                                            class="w-5 h-5 group-hover/btn:rotate-12 transition-transform" fill="none"
-                                            stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"
-                                            stroke-linecap="round" stroke-linejoin="round">
-                                            <circle cx="8" cy="21" r="1" />
-                                            <circle cx="19" cy="21" r="1" />
-                                            <path d="M2.05 2.05h1.5l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
-                                        </svg>
-                                    </button>
-                                </form>
+                                    <form action="/cart/agregar" method="POST" class="flex items-center gap-2">
+                                        <input type="hidden" name="productId" value="<%= producto.id_producto %>">
+                                        
+                                        <div class="flex items-center bg-gray-50 dark:bg-sapphire-800 rounded-xl border border-gray-100 dark:border-sapphire-700 h-10 px-2">
+                                            <input type="number" 
+                                                   name="cantidad" 
+                                                   value="1" 
+                                                   min="1" 
+                                                   max="<%= producto.stock %>"
+                                                   class="w-10 bg-transparent text-center font-bold text-xs focus:outline-none dark:text-white"
+                                            >
+                                        </div>
+
+                                        <button type="submit"
+                                            class="p-2.5 rounded-xl bg-primary text-white hover:bg-secondary active:scale-95 transition-all disabled:opacity-30 disabled:cursor-not-allowed group/btn"
+                                            <%=producto.stock===0 ? 'disabled' : '' %>
+                                            >
+                                            <svg xmlns="http://www.w3.org/2000/svg"
+                                                class="w-5 h-5 group-hover/btn:rotate-12 transition-transform" fill="none"
+                                                stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"
+                                                stroke-linecap="round" stroke-linejoin="round">
+                                                <circle cx="8" cy="21" r="1" />
+                                                <circle cx="19" cy="21" r="1" />
+                                                <path d="M2.05 2.05h1.5l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
+                                            </svg>
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
-                        </div>
-                    </article>
-                    <% }) %>
+                        </article>
+                        <% }) %>
+                </div>
             </div>
-        </div>
-        <% }) %>
+            <% }) %>
+    <% } %>
 
             <%- include('partials/footer') %>

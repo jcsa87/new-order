@@ -26,11 +26,21 @@ class UsuarioModel {
     }
 
     static async verificarUsuario(datosRegistro) {
-        const { email, nombre, apellido, contrasena, id_provincia, id_localidad } = datosRegistro;
+        const { email, nombre, apellido, contrasena, confirmarContrasena, id_provincia, id_localidad } = datosRegistro;
 
         // Flujo Alternativo: Campos incompletos
-        if (!email || !nombre || !apellido || !contrasena || !id_provincia || !id_localidad) {
+        if (!email || !nombre || !apellido || !contrasena || !confirmarContrasena || !id_provincia || !id_localidad) {
             throw new Error("Campo obligatorio incompleto. Por favor completa todos los datos obligatorios.");
+        }
+
+        // Validar longitud mínima de la contraseña
+        if (contrasena.length < 6) {
+            throw new Error("La contraseña debe tener al menos 6 caracteres.");
+        }
+
+        // Validar coincidencia de contraseñas
+        if (contrasena !== confirmarContrasena) {
+            throw new Error("Las contraseñas no coinciden. Por favor verifícalas.");
         }
 
         // Flujo Alternativo: Datos incorrectos (usuario duplicado)
