@@ -18,14 +18,9 @@ class PedidoService {
 
         const totales = CarritoService.obtenerTotales();
         
-        // Obtener costo de envío para sumar al total
-        const metodosEnvio = await MetodoEnvioModel.obtenerMetodosEnvio();
-        const metodoSeleccionado = metodosEnvio.find(m => m.id_metodo_envio === parseInt(id_metodo_envio));
-        const costoEnvio = metodoSeleccionado ? parseFloat(metodoSeleccionado.costo_base) : 0.0;
-
         const subtotal = parseFloat(totales.subtotal);
         const descuento = 0.0; // Valor por defecto
-        const totalFinal = subtotal + parseFloat(totales.impuestos) + costoEnvio;
+        const totalFinal = subtotal + parseFloat(totales.impuestos);
 
         const datosPedido = {
             id_usuario,

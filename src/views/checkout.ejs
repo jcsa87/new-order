@@ -24,8 +24,39 @@
 
         <!-- Columnas Izquierdas (Detalles del Checkout) -->
         <div class="lg:col-span-2 space-y-6">
-            <!-- 1. Dirección de Entrega -->
+            <!-- 1. Método de Envío -->
             <div class="p-6 bg-white dark:bg-sapphire-900 rounded-3xl border border-gray-100 dark:border-sapphire-800 shadow-sm">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="p-2 bg-primary/10 text-primary rounded-xl">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10M21 16V10a2 2 0 00-2-2h-3l-2.73-2.73a1 1 0 00-.71-.27H12"/></svg>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 dark:text-white">Método de Envío</h3>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <% metodosEnvio.forEach((envio, index) => { %>
+                        <label class="relative flex p-4 bg-gray-50 dark:bg-sapphire-950 border border-gray-150 dark:border-sapphire-800 rounded-2xl cursor-pointer hover:border-primary dark:hover:border-primary focus-within:ring-2 focus-within:ring-primary transition-all select-none">
+                            <input type="radio" name="id_metodo_envio" value="<%= envio.id_metodo_envio %>" 
+                                   class="sr-only" <%= index === 0 ? 'checked' : '' %>
+                                   data-nombre="<%= envio.nombre %>"
+                                   onchange="actualizarTotales(); toggleDireccionEntrega();">
+                            <div class="flex flex-col justify-between h-full w-full">
+                                <div>
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="font-bold text-gray-900 dark:text-white"><%= envio.nombre %></span>
+                                        <div class="w-4 h-4 rounded-full border-2 border-gray-300 dark:border-sapphire-700 flex items-center justify-center selector-dot">
+                                            <div class="w-1.5 h-1.5 rounded-full bg-white hidden inner-dot"></div>
+                                        </div>
+                                    </div>
+                                    <p class="text-xs text-gray-400 dark:text-sapphire-500 leading-normal"><%= envio.descripcion %></p>
+                                </div>
+                            </div>
+                        </label>
+                    <% }) %>
+                </div>
+            </div>
+
+            <!-- 2. Dirección de Entrega -->
+            <div id="direccionEntregaSeccion" class="p-6 bg-white dark:bg-sapphire-900 rounded-3xl border border-gray-100 dark:border-sapphire-800 shadow-sm transition-all duration-300">
                 <div class="flex items-center gap-3 mb-4">
                     <div class="p-2 bg-primary/10 text-primary rounded-xl">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
@@ -97,40 +128,6 @@
                             </select>
                         </div>
                     </div>
-                </div>
-            </div>
-
-            <!-- 2. Método de Envío -->
-            <div class="p-6 bg-white dark:bg-sapphire-900 rounded-3xl border border-gray-100 dark:border-sapphire-800 shadow-sm">
-                <div class="flex items-center gap-3 mb-4">
-                    <div class="p-2 bg-primary/10 text-primary rounded-xl">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10M21 16V10a2 2 0 00-2-2h-3l-2.73-2.73a1 1 0 00-.71-.27H12"/></svg>
-                    </div>
-                    <h3 class="text-lg font-bold text-gray-900 dark:text-white">Método de Envío</h3>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <% metodosEnvio.forEach((envio, index) => { %>
-                        <label class="relative flex p-4 bg-gray-50 dark:bg-sapphire-950 border border-gray-150 dark:border-sapphire-800 rounded-2xl cursor-pointer hover:border-primary dark:hover:border-primary focus-within:ring-2 focus-within:ring-primary transition-all select-none">
-                            <input type="radio" name="id_metodo_envio" value="<%= envio.id_metodo_envio %>" 
-                                   class="sr-only" <%= index === 0 ? 'checked' : '' %>
-                                   data-costo="<%= envio.costo_base %>"
-                                   onchange="actualizarTotales()">
-                            <div class="flex flex-col justify-between h-full w-full">
-                                <div>
-                                    <div class="flex items-center justify-between mb-2">
-                                        <span class="font-bold text-gray-900 dark:text-white"><%= envio.nombre %></span>
-                                        <div class="w-4 h-4 rounded-full border-2 border-gray-300 dark:border-sapphire-700 flex items-center justify-center selector-dot">
-                                            <div class="w-1.5 h-1.5 rounded-full bg-white hidden inner-dot"></div>
-                                        </div>
-                                    </div>
-                                    <p class="text-xs text-gray-400 dark:text-sapphire-500 leading-normal mb-4"><%= envio.descripcion %></p>
-                                </div>
-                                <div class="text-sm font-black text-primary dark:text-accent">
-                                    <%= envio.costo_base > 0 ? '$' + Number(envio.costo_base).toFixed(2) : 'Gratis' %>
-                                </div>
-                            </div>
-                        </label>
-                    <% }) %>
                 </div>
             </div>
 
@@ -256,72 +253,98 @@
 
         <!-- Columna Derecha (Resumen de Compra) -->
         <div class="lg:col-span-1">
-            <div class="bg-gray-900 dark:bg-sapphire-900 p-8 rounded-3xl text-white shadow-2xl shadow-gray-900/20 sticky top-24">
-                <h3 class="text-xl font-bold mb-6 border-b border-white/10 pb-4">Detalle de Compra</h3>
+            <div class="bg-white dark:bg-sapphire-900 border border-gray-150 dark:border-sapphire-800 p-8 rounded-3xl text-gray-900 dark:text-white shadow-xl sticky top-24">
+                <h3 class="text-xl font-bold mb-6 border-b border-gray-100 dark:border-sapphire-800 pb-4">Detalle de Compra</h3>
 
                 <!-- Productos en la orden -->
                 <div class="max-h-48 overflow-y-auto mb-6 pr-2 space-y-3 custom-scrollbar">
                     <% itemsCarrito.forEach(item => { %>
                         <div class="flex justify-between items-center gap-3">
                             <div class="min-w-0 flex-grow">
-                                <p class="text-xs font-bold truncate text-gray-200"><%= item.nombre %></p>
-                                <p class="text-[10px] text-gray-400 mt-0.5"><%= item.quantity %> x $<%= item.precio_unitario %></p>
+                                <p class="text-xs font-bold truncate text-gray-800 dark:text-gray-250"><%= item.nombre %></p>
+                                <p class="text-[10px] text-gray-400 dark:text-sapphire-500 mt-0.5"><%= item.quantity %> x $<%= item.precio_unitario %></p>
                             </div>
-                            <span class="text-xs font-bold text-white flex-shrink-0">$<%= Number(item.subtotal_item).toFixed(2) %></span>
+                            <span class="text-xs font-bold text-gray-900 dark:text-white flex-shrink-0">$<%= Number(item.subtotal_item).toFixed(2) %></span>
                         </div>
                     <% }) %>
                 </div>
 
                 <!-- Totales del Pedido -->
-                <div class="space-y-4 mb-8 border-t border-white/10 pt-4">
-                    <div class="flex justify-between text-xs text-gray-400">
+                <div class="space-y-4 mb-8 border-t border-gray-100 dark:border-sapphire-800 pt-4">
+                    <div class="flex justify-between text-xs text-gray-500 dark:text-sapphire-400">
                         <span>Subtotal</span>
-                        <span class="text-white">$<%= totales.subtotal %></span>
+                        <span class="text-gray-900 dark:text-white">$<%= totales.subtotal %></span>
                     </div>
-                    <div class="flex justify-between text-xs text-gray-400">
+                    <div class="flex justify-between text-xs text-gray-500 dark:text-sapphire-400">
                         <span>Impuestos (IVA 21%)</span>
-                        <span class="text-white">$<%= totales.impuestos %></span>
+                        <span class="text-gray-900 dark:text-white">$<%= totales.impuestos %></span>
                     </div>
-                    <div class="flex justify-between text-xs text-gray-400">
-                        <span>Costo de Envío</span>
-                        <span class="text-white font-medium" id="envioCostoText">$0.00</span>
-                    </div>
-                    <div class="pt-4 border-t border-white/10 flex justify-between items-end">
-                        <span class="text-xs uppercase tracking-widest font-bold text-accent">Total</span>
-                        <span class="text-3xl font-black text-white" id="totalFinalText">$0.00</span>
+                    <div class="pt-4 border-t border-gray-100 dark:border-sapphire-800 flex justify-between items-end">
+                        <span class="text-xs uppercase tracking-widest font-black text-primary dark:text-accent">Total</span>
+                        <span class="text-3xl font-black text-gray-900 dark:text-white" id="totalFinalText">$0.00</span>
                     </div>
                 </div>
 
                 <!-- Botón de Confirmación -->
-                <button type="submit" class="w-full py-4 bg-primary rounded-2xl font-black text-lg hover:bg-secondary active:scale-95 transition-all shadow-lg shadow-primary/20">
+                <button type="submit" class="w-full py-4 bg-primary text-white rounded-2xl font-black text-lg hover:bg-secondary active:scale-95 transition-all shadow-lg shadow-primary/20">
                     Confirmar Pedido
                 </button>
 
-                <p class="text-[10px] text-center mt-4 text-gray-500 uppercase tracking-widest leading-relaxed">
+                <p class="text-[10px] text-center mt-4 text-gray-400 dark:text-sapphire-500 uppercase tracking-widest leading-relaxed">
                     Sujeto a verificación de stock <br> y términos de servicio.
                 </p>
             </div>
         </div>
     </form>
 </div>
+<div id="checkout-data" class="hidden" data-direccion="<%= direccion ? JSON.stringify(direccion) : '' %>"></div>
 
 <script>
+    const checkoutData = document.getElementById('checkout-data');
+    window.direccionGuardada = (checkoutData && checkoutData.dataset.direccion) ? JSON.parse(checkoutData.dataset.direccion) : null;
     const subtotal = parseFloat("<%= totales.subtotal %>");
     const impuestos = parseFloat("<%= totales.impuestos %>");
 
     function actualizarTotales() {
-        const selectedEnvio = document.querySelector('input[name="id_metodo_envio"]:checked');
-        if (!selectedEnvio) return;
-
-        const costoEnvio = parseFloat(selectedEnvio.dataset.costo || 0);
-        
-        const envioCostoText = document.getElementById('envioCostoText');
         const totalFinalText = document.getElementById('totalFinalText');
-
-        envioCostoText.textContent = costoEnvio > 0 ? `$${costoEnvio.toFixed(2)}` : 'Gratis';
-        
-        const total = subtotal + impuestos + costoEnvio;
+        if (!totalFinalText) return;
+        const total = subtotal + impuestos;
         totalFinalText.textContent = `$${total.toFixed(2)}`;
+    }
+
+    // --- ACTIVAR / DESACTIVAR DIRECCIÓN DE ENTREGA SEGÚN ENVÍO ---
+    function toggleDireccionEntrega() {
+        const selectedEnvio = document.querySelector('input[name="id_metodo_envio"]:checked');
+        const direccionSeccion = document.getElementById('direccionEntregaSeccion');
+        if (!selectedEnvio || !direccionSeccion) return;
+
+        const esCorreoArgentino = selectedEnvio.dataset.nombre.toLowerCase().includes('correo argentino');
+        const inputs = direccionSeccion.querySelectorAll('input, select, checkbox, button');
+        const inputModificar = document.getElementById('modificar_direccion_input');
+
+        if (esCorreoArgentino) {
+            direccionSeccion.classList.remove('opacity-40', 'pointer-events-none', 'select-none');
+            inputs.forEach(el => {
+                el.removeAttribute('disabled');
+            });
+            // Re-aplicar required si modificar_direccion es true o no hay dirección guardada
+            if (inputModificar && inputModificar.value === 'true') {
+                const direccionForm = document.getElementById('direccionForm');
+                if (direccionForm) {
+                    direccionForm.querySelectorAll('input, select').forEach(el => {
+                        if (el.id !== 'nro_piso' && el.id !== 'nro_departamento') {
+                            el.setAttribute('required', 'true');
+                        }
+                    });
+                }
+            }
+        } else {
+            direccionSeccion.classList.add('opacity-40', 'pointer-events-none', 'select-none');
+            inputs.forEach(el => {
+                el.setAttribute('disabled', 'true');
+                el.removeAttribute('required');
+            });
+        }
     }
 
     // --- CARGAR LOCALIDADES DINÁMICAMENTE ---
@@ -357,7 +380,7 @@
     const inputModificar = document.getElementById('modificar_direccion_input');
 
     if (checkboxModificar) {
-        checkboxModificar.addEventListener('change', function() {
+        checkboxModificar.addEventListener('change', async function() {
             if (this.checked) {
                 direccionForm.classList.remove('hidden');
                 inputModificar.value = 'true';
@@ -366,9 +389,26 @@
                         el.setAttribute('required', 'true');
                     }
                 });
-                const provSelect = document.getElementById('id_provincia');
-                if (provSelect.value) {
-                    cargarLocalidades(provSelect.value);
+
+                // Autocompletar datos de dirección si el usuario ya los tiene almacenados
+                if (window.direccionGuardada) {
+                    document.getElementById('calle').value = window.direccionGuardada.calle || '';
+                    document.getElementById('numero_calle').value = window.direccionGuardada.numero_calle || '';
+                    document.getElementById('nro_piso').value = window.direccionGuardada.nro_piso || '';
+                    document.getElementById('nro_departamento').value = window.direccionGuardada.nro_departamento || '';
+                    document.getElementById('codigo_postal').value = window.direccionGuardada.codigo_postal || '';
+                    
+                    const provSelect = document.getElementById('id_provincia');
+                    provSelect.value = window.direccionGuardada.id_provincia || '';
+                    if (window.direccionGuardada.id_provincia) {
+                        await cargarLocalidades(window.direccionGuardada.id_provincia);
+                        document.getElementById('id_localidad').value = window.direccionGuardada.id_localidad || '';
+                    }
+                } else {
+                    const provSelect = document.getElementById('id_provincia');
+                    if (provSelect.value) {
+                        await cargarLocalidades(provSelect.value);
+                    }
                 }
             } else {
                 direccionForm.classList.add('hidden');
@@ -426,6 +466,7 @@
     document.addEventListener('DOMContentLoaded', () => {
         actualizarTotales();
         togglePaymentForms();
+        toggleDireccionEntrega();
     });
 </script>
 
@@ -434,14 +475,23 @@
         width: 4px;
     }
     .custom-scrollbar::-webkit-scrollbar-track {
-        background: rgba(255,255,255,0.05);
+        background: rgba(0,0,0,0.05);
         border-radius: 2px;
+    }
+    .dark .custom-scrollbar::-webkit-scrollbar-track {
+        background: rgba(255,255,255,0.05);
     }
     .custom-scrollbar::-webkit-scrollbar-thumb {
-        background: rgba(255,255,255,0.2);
+        background: rgba(0,0,0,0.15);
         border-radius: 2px;
     }
+    .dark .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: rgba(255,255,255,0.2);
+    }
     .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: rgba(0,0,0,0.25);
+    }
+    .dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
         background: rgba(255,255,255,0.4);
     }
     

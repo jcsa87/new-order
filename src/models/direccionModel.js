@@ -9,6 +9,7 @@ class DireccionModel {
         this.nro_departamento = row.nro_departamento;
         this.codigo_postal = row.codigo_postal;
         this.id_localidad = row.id_localidad;
+        this.id_provincia = row.id_provincia;
         this.localidad_nombre = row.localidad_nombre;
         this.provincia_nombre = row.provincia_nombre;
     }
@@ -21,7 +22,7 @@ class DireccionModel {
     static obtenerPorId(id) {
         return new Promise((resolve, reject) => {
             const sql = `
-                SELECT d.*, l.nombre as localidad_nombre, p.nombre as provincia_nombre
+                SELECT d.*, l.nombre as localidad_nombre, p.nombre as provincia_nombre, l.id_provincia as id_provincia
                 FROM direccion d
                 LEFT JOIN localidad l ON d.id_localidad = l.id_localidad
                 LEFT JOIN provincia p ON l.id_provincia = p.id_provincia

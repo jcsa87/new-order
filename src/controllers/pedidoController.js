@@ -32,10 +32,12 @@ class PedidoController {
             // Obtener dirección asociada
             let direccionCompleta = '';
             let id_direccion = null;
+            let direccion = null;
             if (usuario.id_direccion) {
                 id_direccion = usuario.id_direccion;
                 const direccionInstance = await DireccionModel.obtenerPorId(id_direccion);
                 if (direccionInstance) {
+                    direccion = direccionInstance;
                     direccionCompleta = direccionInstance.obtenerDireccionCompleta();
                 }
             }
@@ -53,6 +55,7 @@ class PedidoController {
                 usuario,
                 id_direccion,
                 direccionCompleta,
+                direccion,
                 metodosEnvio,
                 metodosPago,
                 itemsCarrito,
@@ -106,38 +109,43 @@ class PedidoController {
             }
 
             // --- CASO ALTERNATIVO 4: Modificar o crear dirección de entrega ---
-            const sinDireccion = !id_direccion || id_direccion === 'null' || id_direccion === '';
-            if (modificar_direccion === 'true' || sinDireccion) {
-                const { calle, numero_calle, nro_piso, nro_departamento, codigo_postal, id_localidad } = req.body;
-                
-                if (!calle || !numero_calle || !codigo_postal || !id_localidad) {
-                    throw new Error("Datos de dirección incompletos. Por favor completa los campos requeridos.");
-                }
+            const metodosEnvio = await MetodoEnvioModel.obtenerMetodosEnvio();
+            const metodoSeleccionado = metodosEnvio.find(m => m.id_metodo_envio === parseInt(id_metodo_envio));
+            const esCorreoArgentino = metodoSeleccionado && metodoSeleccionado.nombre.toLowerCase().includes('correo argentino');
 
-                // Obtener instancia del usuario para guardar su dirección
-                const usuario = await UsuarioModel.obtenerPorId(id_usuario);
-                if (!usuario) {
-                    throw new Error("Usuario no encontrado.");
-                }
+            if (esCorreoArgentino) {
+                const sinDireccion = !id_direccion || id_direccion === 'null' || id_direccion === '';
+                if (modificar_direccion === 'true' || sinDireccion) {
+                    const { calle, numero_calle, nro_piso, nro_departamento, codigo_postal, id_localidad } = req.body;
+                    
+                    if (!calle || !numero_calle || !codigo_postal || !id_localidad) {
+                        throw new Error("Datos de dirección incompletos. Por favor completa los campos requeridos.");
+                    }
 
-                // Guardar la nueva dirección y asociarla al usuario (llamando al método de instancia)
-                id_direccion = await usuario.guardarDireccion({
-                    calle,
-                    numero_calle,
-                    nro_piso,
-                    nro_departamento,
-                    codigo_postal,
-                    id_localidad
-                });
+                    // Obtener instancia del usuario para guardar su dirección
+                    const usuario = await UsuarioModel.obtenerPorId(id_usuario);
+                    if (!usuario) {
+                        throw new Error("Usuario no encontrado.");
+                    }
+
+                    // Guardar la nueva dirección y asociarla al usuario (llamando al método de instancia)
+                    id_direccion = await usuario.guardarDireccion({
+                        calle,
+                        numero_calle,
+                        nro_piso,
+                        nro_departamento,
+                        codigo_postal,
+                        id_localidad
+                    });
+                }
+            } else {
+                id_direccion = null;
             }
 
             // --- CÁLCULO DEL TOTAL FINAL ---
             const totales = CarritoService.obtenerTotales();
             const subtotal = parseFloat(totales.subtotal);
-            const metodosEnvio = await MetodoEnvioModel.obtenerMetodosEnvio();
-            const metodoSeleccionado = metodosEnvio.find(m => m.id_metodo_envio === parseInt(id_metodo_envio));
-            const costoEnvio = metodoSeleccionado ? parseFloat(metodoSeleccionado.costo_base) : 0.0;
-            const totalFinal = subtotal + parseFloat(totales.impuestos) + costoEnvio;
+            const totalFinal = subtotal + parseFloat(totales.impuestos);
             totalFinalString = totalFinal.toFixed(2);
 
             // --- APLICACIÓN DEL PATRÓN STRATEGY DE PAGOS ---
