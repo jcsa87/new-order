@@ -12,6 +12,7 @@ class PedidoService {
      */
     static async confirmarPedido({ id_usuario, id_metodo_pago, id_metodo_envio, id_direccion }) {
         const items = CarritoService.obtenerCarrito();
+        //Exige que si el carrito está vacío, se rechace.
         if (items.length === 0) {
             throw new Error("El carrito está vacío.");
         }
@@ -21,7 +22,7 @@ class PedidoService {
         const subtotal = parseFloat(totales.subtotal);
         const descuento = 0.0; // Valor por defecto
         const totalFinal = subtotal + parseFloat(totales.impuestos);
-
+        //Exige que el sistema ya conozca al Usuario, Método de Pago y Dirección. 
         const datosPedido = {
             id_usuario,
             id_metodo_pago: parseInt(id_metodo_pago),
@@ -51,14 +52,13 @@ class PedidoService {
                 // Llamamos al método de instancia para descontar stock
                 await producto.descontarStock(item.quantity);
             }
-        } catch (error) {
-            // 3. Compensación: Si falla el stock, eliminamos el pedido recién creado
+        } catch (error) { //Contrato de operaciones, excepcion de si "Si durante la verificación algún producto posee stock inferior, el sistema cancela la operación".
             console.error("[PedidoService] Falla de stock durante el procesamiento. Cancelando pedido id:", id_pedido);
             await PedidoModel.eliminarPedido(id_pedido);
             throw new Error("Error al procesar: Stock agotado");
         }
 
-        // 4. Solicitar vaciar el carrito
+        // Contrato, post-condiciones "Se eliminaron todas las instancias de ItemCarrito..."
         CarritoService.vaciarCarrito();
 
         return id_pedido;

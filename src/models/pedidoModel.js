@@ -15,13 +15,14 @@ class PedidoModel {
     static crearPedido(datos) {
         return new Promise((resolve, reject) => {
             db.serialize(() => {
-                db.run("BEGIN TRANSACTION");
+                db.run("BEGIN TRANSACTION"); //transaccion atomica pura para garantizar integridad de datos
 
                 const { id_usuario, id_metodo_pago, id_metodo_envio, id_direccion, subtotal_pedido, descuento_aplicado, total, items } = datos;
                 const fecha_creacion = new Date().toISOString();
                 const estado = 'Pendiente'; // Estado inicial según Larman
                 
                 db.run(
+                    //asociando id_usuario, id_metodo_pago y id_direccion. Postcondicion 1,2,3,4 del contrato
                     `INSERT INTO pedido (fecha_creacion, estado, subtotal_pedido, descuento_aplicado, total, id_usuario, id_metodo_pago, id_metodo_envio, id_direccion) 
                      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
                     [fecha_creacion, estado, subtotal_pedido, descuento_aplicado, total, id_usuario, id_metodo_pago, id_metodo_envio, id_direccion],
@@ -37,7 +38,8 @@ class PedidoModel {
                         const stmt = db.prepare(`INSERT INTO detalle_pedido (cantidad, precio_unitario, subtotal_item, id_pedido, id_producto) VALUES (?, ?, ?, ?, ?)`);
                         
                         let errores = false;
-                        for (const item of items) {
+                        //hace un INSERT INTO detalle_pedido, asociando el ID del producto y el ID del pedido recién creado. (Cumpliendo la post-condición "Por cada ItemCarrito").
+                        for (const item of items) { 
                             stmt.run([item.quantity, item.precio_unitario, item.subtotal_item, id_pedido, item.id_producto], (err) => {
                                 if (err) errores = true;
                             });
@@ -49,7 +51,7 @@ class PedidoModel {
                             return reject(new Error("Error al insertar detalles del pedido"));
                         }
 
-                        db.run("COMMIT");
+                        db.run("COMMIT"); //el commit significa que a nivel de base de datos, si algo falla, no se guardan pedidos "a medias"
                         resolve(id_pedido);
                     }
                 );

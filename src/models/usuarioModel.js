@@ -28,6 +28,7 @@ class UsuarioModel {
     static async verificarUsuario(datosRegistro) {
         const { email, nombre, apellido, contrasena, confirmarContrasena, id_provincia, id_localidad } = datosRegistro;
 
+        //Excepcion del contrato de operaciones-CU Registro usuario 
         // Flujo Alternativo: Campos incompletos
         if (!email || !nombre || !apellido || !contrasena || !confirmarContrasena || !id_provincia || !id_localidad) {
             throw new Error("Campo obligatorio incompleto. Por favor completa todos los datos obligatorios.");
@@ -43,6 +44,7 @@ class UsuarioModel {
             throw new Error("Las contraseñas no coinciden. Por favor verifícalas.");
         }
 
+        //Excepcion del contrato de operaciones-CU Registro usuario 
         // Flujo Alternativo: Datos incorrectos (usuario duplicado)
         const usuarioExistente = await this.buscarPorEmail(email);
         if (usuarioExistente) {

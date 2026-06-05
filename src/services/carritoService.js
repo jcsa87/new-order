@@ -47,17 +47,17 @@ class CarritoService {
         const item = this.items.find(i => i.id_producto === id);
 
         if (item) {
-            // Reutilizamos el método de validación único y centralizado del modelo
+            // Se verifica el stock solo si la nueva cantidad es mayor a la actual para evitar validaciones innecesarias
             if (qty > item.quantity) {
                 await ProductoModel.verificarStock(id, qty);
             }
 
             item.quantity = qty;
             item.subtotal_item = item.quantity * item.precio_unitario;
-
+            //Alternativa 2: CU Modificar cantidad 
             if (item.quantity <= 0) {
                 this.quitarItem(id);
-            } else {
+            } else {//Actualiza las cantidades, subtotales y totales generales
                 this.recalcularTotales();
             }
         }
