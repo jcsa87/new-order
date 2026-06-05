@@ -1,4 +1,5 @@
 const CarritoService = require('../services/carritoService');
+const ProductoModel = require('../models/productoModel');
 
 class CarritoController {
     static verCarrito(req, res) {
@@ -46,9 +47,26 @@ class CarritoController {
 
     static async actualizarCantidad(req, res) {
         const { productId, nuevaCantidad } = req.body;
+        const id = parseInt(productId);
+        const qty = parseInt(nuevaCantidad) || 0;
 
         try {
-            await CarritoService.actualizarCantidad(productId, parseInt(nuevaCantidad));
+            if (qty <= 0) {
+                // Caso Alternativo 2: El usuario baja la cantidad a 0.
+                // Detecta cantidad nula y pide borrarlo -> quitarItem()
+                CarritoService.quitarItem(id);
+            } else {
+                // Caso Normal y Alternativo 1
+                // 1. Verifica el nuevo límite de stock con la entidad Producto
+                await ProductoModel.verificarStock(id, qty);
+                
+                // 2. Solicita actualizar la cantidad al Carrito -> actualizarCantidad()
+                await CarritoService.actualizarCantidad(id, qty);
+                
+                // 3. Solicita recalcular el total al Carrito -> recalcularTotales()
+                CarritoService.recalcularTotales();
+            }
+
             const referer = req.get('Referer') || '/cart';
             const separator = referer.includes('?') ? '&' : '?';
             res.redirect(referer + separator + 'cart=open');

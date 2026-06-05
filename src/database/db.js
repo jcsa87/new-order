@@ -9,6 +9,7 @@ const initDb = () => {
     db.get("SELECT name FROM sqlite_master WHERE type='table' AND name='usuario'", (err, row) => {
         if (row) {
             console.log("La base de datos ya está inicializada. Manteniendo datos existentes.");
+            db.run("INSERT OR IGNORE INTO metodo_pago (id_metodo_pago, nombre, descripcion, estado) VALUES (3, 'Mercado Pago', 'Paga a través de tu cuenta de Mercado Pago', 'activo')");
             db.run("PRAGMA foreign_keys = ON");
             return;
         }
@@ -117,7 +118,7 @@ const initDb = () => {
             fecha_creacion TEXT DEFAULT CURRENT_TIMESTAMP,
             estado TEXT DEFAULT 'pendiente',
             subtotal_pedido REAL,
-            descuento_applied REAL DEFAULT 0,
+            descuento_aplicado REAL DEFAULT 0,
             total REAL,
             id_usuario INTEGER,
             id_metodo_pago INTEGER,
@@ -200,6 +201,7 @@ const initDb = () => {
 
         db.run("INSERT INTO metodo_pago (nombre, descripcion) VALUES ('Tarjeta de Crédito', 'Visa, Mastercard, American Express')");
         db.run("INSERT INTO metodo_pago (nombre, descripcion) VALUES ('Transferencia', 'Transferencia bancaria directa')");
+        db.run("INSERT INTO metodo_pago (nombre, descripcion) VALUES ('Mercado Pago', 'Paga a través de tu cuenta de Mercado Pago')");
         db.run("INSERT INTO metodo_envio (nombre, descripcion, costo_base) VALUES ('Correo Argentino', 'Envío a domicilio en todo el país', 500.00)");
         db.run("INSERT INTO metodo_envio (nombre, descripcion, costo_base) VALUES ('Retiro en Local', 'Sucursal central CABA', 0.00)");
 

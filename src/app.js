@@ -57,6 +57,8 @@ app.use((req, res, next) => {
 const productoRoutes = require('./routes/productoRoutes');
 const carritoRoutes = require('./routes/carritoRoutes');
 const autenticacionRoutes = require('./routes/autenticacionRoutes');
+const pedidoRoutes = require('./routes/pedidoRoutes');
+const misPedidosRoutes = require('./routes/misPedidosRoutes');
 
 app.get('/', (req, res) => res.redirect('/products'));
 
@@ -68,6 +70,8 @@ app.get('/contact', (req, res) => res.render('contact', { title: 'Contacto' }));
 app.use('/products', productoRoutes);
 app.use('/cart', carritoRoutes);
 app.use('/auth', autenticacionRoutes);
+app.use('/checkout', pedidoRoutes);
+app.use('/pedidos', misPedidosRoutes);
 
 app.listen(PORT, () => {
     console.log(`New Order corriendo en http://localhost:${PORT}`);
