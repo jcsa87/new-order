@@ -33,6 +33,65 @@ class ProductoModel {
         });
     }
 
+    // Aquí buscamos absolutamente todos los productos, incluso los desactivados, para que el Administrador pueda ver todo.
+    static obtenerTodos() {
+        return new Promise((resolve, reject) => {
+            const sql = `
+                SELECT p.*, c.nombre as categoria_nombre 
+                FROM producto p
+                LEFT JOIN categoria c ON p.id_categoria = c.id_categoria
+            `;
+            db.all(sql, [], (err, rows) => {
+                if (err) reject(err);
+                else resolve(rows.map(row => new ProductoModel(row)));
+            });
+        });
+    }
+
+    // Aquí guardamos un producto completamente nuevo en la base de datos con los datos del formulario.
+    static crear(datos) {
+        return new Promise((resolve, reject) => {
+            const sql = `INSERT INTO producto (nombre, descripcion, precio_unitario, stock, imagen, id_categoria, estado_producto) VALUES (?, ?, ?, ?, ?, ?, 'activo')`;
+            db.run(sql, [datos.nombre, datos.descripcion, datos.precio_unitario, datos.stock, datos.imagen, datos.id_categoria], function(err) {
+                if (err) reject(err);
+                else resolve(this.lastID);
+            });
+        });
+    }
+
+    // Aquí tomamos un producto existente y actualizamos sus datos (nombre, precio, stock, etc.).
+    static actualizar(id, datos) {
+        return new Promise((resolve, reject) => {
+            const sql = `UPDATE producto SET nombre = ?, descripcion = ?, precio_unitario = ?, stock = ?, imagen = ?, id_categoria = ? WHERE id_producto = ?`;
+            db.run(sql, [datos.nombre, datos.descripcion, datos.precio_unitario, datos.stock, datos.imagen, datos.id_categoria, id], function(err) {
+                if (err) reject(err);
+                else resolve(this.changes > 0);
+            });
+        });
+    }
+
+    // En lugar de borrar el producto (lo cual rompería el historial de compras viejas), simplemente lo marcamos como inactivo (borrado lógico).
+    static desactivar(id) {
+        return new Promise((resolve, reject) => {
+            const sql = `UPDATE producto SET estado_producto = 'inactivo' WHERE id_producto = ?`;
+            db.run(sql, [id], function(err) {
+                if (err) reject(err);
+                else resolve(this.changes > 0);
+            });
+        });
+    }
+
+    // [CASO DE USO: Gestionar Productos] - Vuelve a poner un producto inactivo a la venta.
+    static activar(id) {
+        return new Promise((resolve, reject) => {
+            const sql = `UPDATE producto SET estado_producto = 'activo' WHERE id_producto = ?`;
+            db.run(sql, [id], function(err) {
+                if (err) reject(err);
+                else resolve(this.changes > 0);
+            });
+        });
+    }
+
     /**
      * Verifica stock como método de instancia.
      * @param {number} cantidad - Cantidad a verificar.

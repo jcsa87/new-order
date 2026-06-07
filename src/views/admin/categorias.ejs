@@ -1,0 +1,74 @@
+<%- include('../partials/header_admin') %>
+
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Gestión de Categorías</h1>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Formulario para crear categoría -->
+        <div class="lg:col-span-1">
+            <div class="bg-white dark:bg-sapphire-900 rounded-2xl shadow p-6 border border-gray-200 dark:border-sapphire-800">
+                <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4">Nueva Categoría</h2>
+                <!-- [CASO DE USO: Gestionar Categorias - Registrar Nueva Categoria] -->
+                <form action="/admin/categorias/nueva" method="POST" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nombre</label>
+                        <input type="text" name="nombre" required class="w-full rounded-xl border-gray-300 dark:border-sapphire-700 bg-gray-50 dark:bg-sapphire-800 p-3 text-gray-900 dark:text-white">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Descripción</label>
+                        <textarea name="descripcion" class="w-full rounded-xl border-gray-300 dark:border-sapphire-700 bg-gray-50 dark:bg-sapphire-800 p-3 text-gray-900 dark:text-white"></textarea>
+                    </div>
+                    <button type="submit" class="w-full bg-primary text-white font-bold py-2 rounded-xl hover:bg-secondary transition-colors">Guardar</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Lista de categorías -->
+        <div class="lg:col-span-2">
+            <div class="bg-white dark:bg-sapphire-900 rounded-2xl shadow overflow-hidden">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-gray-100 dark:bg-sapphire-800 text-gray-700 dark:text-gray-300">
+                            <th class="p-4 border-b dark:border-sapphire-700">ID</th>
+                            <th class="p-4 border-b dark:border-sapphire-700">Nombre</th>
+                            <th class="p-4 border-b dark:border-sapphire-700">Estado</th>
+                            <th class="p-4 border-b dark:border-sapphire-700">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% categorias.forEach(cat => { %>
+                        <tr class="border-b dark:border-sapphire-800 hover:bg-gray-50 dark:hover:bg-sapphire-800/50">
+                            <td class="p-4 font-bold text-gray-900 dark:text-white">#<%= cat.id_categoria %></td>
+                            <td class="p-4 text-gray-700 dark:text-gray-300">
+                                <strong><%= cat.nombre %></strong><br>
+                                <span class="text-xs text-gray-500"><%= cat.descripcion %></span>
+                            </td>
+                            <td class="p-4">
+                                <% if(cat.estado === 'activo' || !cat.estado) { %>
+                                    <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">Activa</span>
+                                <% } else { %>
+                                    <span class="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded">Inactiva</span>
+                                <% } %>
+                            </td>
+                            <td class="p-4">
+                                <!-- [CASO DE USO: Gestionar Categorias - Desactivar Categoria] -->
+                                <% if(cat.estado === 'activo' || !cat.estado) { %>
+                                <form action="/admin/categorias/desactivar/<%= cat.id_categoria %>" method="POST" onsubmit="return confirm('¿Seguro que deseas desactivar esta categoría?');">
+                                    <button type="submit" class="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600">Desactivar</button>
+                                </form>
+                                <% } else { %>
+                                <form action="/admin/categorias/activar/<%= cat.id_categoria %>" method="POST" onsubmit="return confirm('¿Seguro que deseas volver a activar esta categoría?');">
+                                    <button type="submit" class="bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600">Activar</button>
+                                </form>
+                                <% } %>
+                            </td>
+                        </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

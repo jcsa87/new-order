@@ -1,0 +1,87 @@
+<%- include('../partials/header_admin') %>
+
+<div class="container mx-auto px-4 py-8 max-w-4xl">
+    <div class="mb-6">
+        <a href="/admin/pedidos" class="text-primary hover:underline">&larr; Volver a Pedidos</a>
+    </div>
+
+    <!-- [CASO DE USO: Gestionar Pedidos - Consultar Detalle Pedido] -->
+    <div class="bg-white dark:bg-sapphire-900 rounded-2xl shadow p-8 border border-gray-200 dark:border-sapphire-800 mb-8">
+        <div class="flex justify-between items-start mb-6 border-b pb-4 dark:border-sapphire-700">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Pedido #<%= pedido.id_pedido %></h1>
+                <p class="text-gray-500">Fecha: <%= new Date(pedido.fecha_creacion).toLocaleString() %></p>
+            </div>
+            
+            <!-- [CASO DE USO: Gestionar Pedidos - Actualizar Estado Pedido] -->
+            <form action="/admin/pedidos/<%= pedido.id_pedido %>/estado" method="POST" class="flex gap-2">
+                <select name="estado" class="rounded-xl border-gray-300 dark:border-sapphire-700 bg-gray-50 dark:bg-sapphire-800 p-2 text-gray-900 dark:text-white">
+                    <option value="Pendiente" <%= pedido.estado === 'Pendiente' ? 'selected' : '' %>>Pendiente</option>
+                    <option value="Procesando" <%= pedido.estado === 'Procesando' ? 'selected' : '' %>>Procesando</option>
+                    <option value="Enviado" <%= pedido.estado === 'Enviado' ? 'selected' : '' %>>Enviado</option>
+                    <option value="Entregado" <%= pedido.estado === 'Entregado' ? 'selected' : '' %>>Entregado</option>
+                    <option value="Cancelado" <%= pedido.estado === 'Cancelado' ? 'selected' : '' %>>Cancelado</option>
+                </select>
+                <button type="submit" class="bg-primary text-white px-4 py-2 rounded-xl font-bold hover:bg-secondary">Actualizar Estado</button>
+            </form>
+        </div>
+
+        <!-- [CASO DE USO: Gestionar Pedidos] - Mostrar datos completos del cliente -->
+        <div class="bg-gray-50 dark:bg-sapphire-800 rounded-xl p-6 mb-8 border border-gray-100 dark:border-sapphire-700">
+            <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4">Datos del Cliente</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <p class="text-sm text-gray-500 dark:text-sapphire-400">Nombre completo</p>
+                    <p class="font-medium text-gray-900 dark:text-white"><%= pedido.nombre %> <%= pedido.apellido %></p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500 dark:text-sapphire-400">Email de contacto</p>
+                    <p class="font-medium text-gray-900 dark:text-white"><%= pedido.email %></p>
+                </div>
+                <div class="md:col-span-2">
+                    <p class="text-sm text-gray-500 dark:text-sapphire-400">Dirección de Entrega</p>
+                    <p class="font-medium text-gray-900 dark:text-white">
+                        <%= pedido.calle %> <%= pedido.numero_calle %>
+                        <%= pedido.nro_piso ? `Piso: ${pedido.nro_piso}` : '' %>
+                        <%= pedido.nro_departamento ? `Depto: ${pedido.nro_departamento}` : '' %>
+                        (CP: <%= pedido.codigo_postal %>)
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4">Productos Comprados</h2>
+        <div class="space-y-4">
+            <% detalles.forEach(item => { %>
+                <div class="flex items-center gap-4 bg-gray-50 dark:bg-sapphire-800 p-4 rounded-xl">
+                    <img src="<%= item.producto_imagen || 'https://via.placeholder.com/50' %>" alt="<%= item.producto_nombre %>" class="w-16 h-16 rounded object-cover">
+                    <div class="flex-grow">
+                        <h3 class="font-bold text-gray-900 dark:text-white"><%= item.producto_nombre %></h3>
+                        <p class="text-sm text-gray-500"><%= item.cantidad %> x $<%= item.precio_unitario %></p>
+                    </div>
+                    <div class="font-bold text-green-600 dark:text-green-400">
+                        $<%= item.subtotal_item %>
+                    </div>
+                </div>
+            <% }) %>
+        </div>
+
+        <div class="mt-8 border-t pt-4 dark:border-sapphire-700 text-right">
+            <% 
+            let subtotalItems = 0;
+            detalles.forEach(item => subtotalItems += item.subtotal_item);
+            %>
+            <p class="text-lg text-gray-700 dark:text-gray-300">Subtotal Productos: $<%= subtotalItems.toFixed(2) %></p>
+            
+            <% if (pedido.total !== subtotalItems) { %>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                    (Diferencia por envío o descuentos aplicados)
+                </p>
+            <% } %>
+
+            <p class="text-3xl font-black text-gray-900 dark:text-white mt-2">Total Pagado: $<%= pedido.total %></p>
+        </div>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

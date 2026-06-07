@@ -1,0 +1,88 @@
+<%- include('../partials/header_admin') %>
+
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Reporte de Ventas</h1>
+
+    <!-- [CASO DE USO: Generar Reporte Ventas] -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <% 
+            let totalGeneral = 0;
+            let totalPedidos = 0;
+            reporte.forEach(item => {
+                totalGeneral += item.ingresos_totales;
+                totalPedidos += item.cantidad_pedidos;
+            });
+        %>
+        
+        <div class="bg-white dark:bg-sapphire-900 p-6 rounded-2xl shadow border border-gray-200 dark:border-sapphire-800">
+            <h3 class="text-gray-500 text-sm font-bold uppercase mb-1">Ingresos Totales</h3>
+            <p class="text-4xl font-black text-green-600 dark:text-green-400">$<%= totalGeneral %></p>
+        </div>
+        
+        <div class="bg-white dark:bg-sapphire-900 p-6 rounded-2xl shadow border border-gray-200 dark:border-sapphire-800">
+            <h3 class="text-gray-500 text-sm font-bold uppercase mb-1">Cantidad de Pedidos</h3>
+            <p class="text-4xl font-black text-blue-600 dark:text-blue-400"><%= totalPedidos %></p>
+        </div>
+        
+        <div class="bg-white dark:bg-sapphire-900 p-6 rounded-2xl shadow border border-gray-200 dark:border-sapphire-800">
+            <h3 class="text-gray-500 text-sm font-bold uppercase mb-1">Ticket Promedio</h3>
+            <p class="text-4xl font-black text-purple-600 dark:text-purple-400">$<%= totalPedidos > 0 ? (totalGeneral / totalPedidos).toFixed(2) : 0 %></p>
+        </div>
+    </div>
+
+    <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4">Desglose por Estado Logístico</h2>
+    <div class="bg-white dark:bg-sapphire-900 rounded-2xl shadow overflow-hidden">
+        <table class="w-full text-left border-collapse">
+            <thead>
+                <tr class="bg-gray-100 dark:bg-sapphire-800 text-gray-700 dark:text-gray-300">
+                    <th class="p-4 border-b dark:border-sapphire-700">Estado del Pedido</th>
+                    <th class="p-4 border-b dark:border-sapphire-700">Cantidad de Pedidos</th>
+                    <th class="p-4 border-b dark:border-sapphire-700">Suma de Ingresos</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% reporte.forEach(item => { %>
+                <tr class="border-b dark:border-sapphire-800 hover:bg-gray-50 dark:hover:bg-sapphire-800/50">
+                    <td class="p-4 font-bold text-gray-900 dark:text-white"><%= item.estado %></td>
+                    <td class="p-4 text-gray-700 dark:text-gray-300"><%= item.cantidad_pedidos %></td>
+                    <td class="p-4 font-bold text-green-600 dark:text-green-400">$<%= item.ingresos_totales %></td>
+                </tr>
+                <% }) %>
+                <% if(reporte.length === 0) { %>
+                <tr>
+                    <td colspan="3" class="p-8 text-center text-gray-500">Aún no hay ventas registradas en el sistema.</td>
+                </tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+
+    <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4 mt-8">Top 5 Productos Más Vendidos</h2>
+    <div class="bg-white dark:bg-sapphire-900 rounded-2xl shadow overflow-hidden mb-8">
+        <table class="w-full text-left border-collapse">
+            <thead>
+                <tr class="bg-gray-100 dark:bg-sapphire-800 text-gray-700 dark:text-gray-300">
+                    <th class="p-4 border-b dark:border-sapphire-700">Producto</th>
+                    <th class="p-4 border-b dark:border-sapphire-700">Unidades Vendidas</th>
+                    <th class="p-4 border-b dark:border-sapphire-700">Ingresos Generados</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% topProductos.forEach(item => { %>
+                <tr class="border-b dark:border-sapphire-800 hover:bg-gray-50 dark:hover:bg-sapphire-800/50">
+                    <td class="p-4 font-bold text-gray-900 dark:text-white"><%= item.nombre %></td>
+                    <td class="p-4 text-gray-700 dark:text-gray-300"><%= item.total_vendido %></td>
+                    <td class="p-4 font-bold text-green-600 dark:text-green-400">$<%= item.ingresos %></td>
+                </tr>
+                <% }) %>
+                <% if(topProductos.length === 0) { %>
+                <tr>
+                    <td colspan="3" class="p-8 text-center text-gray-500">Aún no hay productos vendidos.</td>
+                </tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

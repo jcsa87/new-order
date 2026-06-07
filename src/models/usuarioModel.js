@@ -58,6 +58,41 @@ class UsuarioModel {
         return !!(session && session.userId);
     }
 
+    // Aquí traemos a todos los usuarios registrados en el sistema, cruzando datos con su rol para que el Administrador vea quién es quién.
+    static obtenerTodos() {
+        return new Promise((resolve, reject) => {
+            const sql = `
+                SELECT u.id_usuario, u.nombre, u.apellido, u.email, u.estado, r.nombre as rol_nombre 
+                FROM usuario u
+                JOIN rol r ON u.id_rol = r.id_rol
+            `;
+            db.all(sql, [], (err, rows) => {
+                if (err) reject(err);
+                else resolve(rows);
+            });
+        });
+    }
+
+    // Para evitar borrar datos históricos de compras, cuando "borramos" a un usuario, en realidad solo le cambiamos el estado a inactivo para que no pueda loguearse más.
+    static desactivar(id) {
+        return new Promise((resolve, reject) => {
+            db.run("UPDATE usuario SET estado = 'inactivo' WHERE id_usuario = ?", [id], function(err) {
+                if (err) reject(err);
+                else resolve(this.changes > 0);
+            });
+        });
+    }
+
+    // Reactivar usuario (borrado lógico)
+    static activar(id) {
+        return new Promise((resolve, reject) => {
+            db.run("UPDATE usuario SET estado = 'activo' WHERE id_usuario = ?", [id], function(err) {
+                if (err) reject(err);
+                else resolve(this.changes > 0);
+            });
+        });
+    }
+
     /**
      * Crear un usuario con dirección obligatoria
      * @param {Object} datosUsuario - { nombre, apellido, email, contrasena, id_rol, address: { calle, numero_calle, nro_piso, nro_departamento, codigo_postal, id_localidad } }
@@ -176,7 +211,9 @@ class UsuarioModel {
     static async iniciarSesion(email, contrasena) {
         try {
             const usuario = await this.buscarPorEmail(email);
-            if (!usuario) return false;
+            // Si el usuario no existe, o si el administrador lo desactivó (baneó), le bloqueamos el paso.
+            if (!usuario || usuario.estado !== 'activo') return false;
+            
             const bcrypt = require('bcryptjs');
             return await bcrypt.compare(contrasena, usuario.contrasena);
         } catch (err) {

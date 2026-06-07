@@ -83,7 +83,8 @@ const initDb = () => {
         db.run(`CREATE TABLE categoria (
             id_categoria INTEGER PRIMARY KEY AUTOINCREMENT,
             nombre TEXT NOT NULL,
-            descripcion TEXT
+            descripcion TEXT,
+            estado TEXT DEFAULT 'activo'
         )`);
 
         db.run(`CREATE TABLE producto (
@@ -222,6 +223,11 @@ const initDb = () => {
         });
     });
     }); // Cierre del callback de db.get
+    
+    // Parche en caliente por si la base de datos ya existía sin la columna 'estado' en 'categoria'
+    db.run("ALTER TABLE categoria ADD COLUMN estado TEXT DEFAULT 'activo'", (err) => {
+        // Ignoramos el error si la columna ya existe
+    });
 };
 
 initDb();

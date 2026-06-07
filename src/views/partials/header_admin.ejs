@@ -1,0 +1,169 @@
+<!-- src/views/partials/header_admin.ejs -->
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= typeof title !== 'undefined' ? title : 'New Order - Admin' %></title>
+    <link rel="icon" type="image/svg+xml" href="/brand/logo_main.svg">
+    <!-- Tailwind Play CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        sapphire: {
+                            50: '#eceff8',
+                            100: '#dadff1',
+                            200: '#b5bfe3',
+                            300: '#8fa0d6',
+                            400: '#6a80c8',
+                            500: '#4560ba',
+                            600: '#374d95',
+                            700: '#293a70',
+                            800: '#1c264a',
+                            900: '#0e1325',
+                            950: '#0a0d1a'
+                        },
+                        primary: '#4560ba',
+                        secondary: '#374d95',
+                        accent: '#6a80c8',
+                    }
+                }
+            }
+        }
+    </script>
+    <script>
+        // Theme Toggle Script
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark')
+        } else {
+            document.documentElement.classList.remove('dark')
+        }
+
+        function toggleTheme() {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.theme = 'light';
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.theme = 'dark';
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        nav {
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Hide HTML5 Number Input Spinners */
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+            -webkit-appearance: none; 
+            margin: 0; 
+        }
+
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 text-gray-900 dark:bg-sapphire-950 dark:text-slate-100 transition-colors duration-300">
+    <nav id="navbar"
+        class="sticky top-0 z-50 bg-white/80 dark:bg-sapphire-900/80 backdrop-blur-md border-b border-gray-200 dark:border-sapphire-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center py-3 md:h-20 relative gap-4">
+                
+                <!-- Center: Logo (Now positioned naturally in flex) -->
+                <div class="flex items-center justify-center md:order-1">
+                    <a href="/admin/dashboard"
+                        class="flex flex-col items-center hover:scale-105 transition-transform">
+                        <img src="/brand/logo_black.svg" class="h-10 dark:hidden" alt="New Order">
+                        <img src="/brand/logo_white.svg" class="h-10 hidden dark:block" alt="New Order">
+                        <span class="text-[10px] font-black tracking-widest text-primary uppercase mt-1">Admin</span>
+                    </a>
+                </div>
+
+                <!-- Admin Links -->
+                <div class="hidden md:flex items-center space-x-4 md:order-2">
+                    <a href="/admin/productos" class="text-sm font-bold text-gray-600 dark:text-sapphire-200 hover:text-primary dark:hover:text-primary transition-colors">Productos</a>
+                    <a href="/admin/categorias" class="text-sm font-bold text-gray-600 dark:text-sapphire-200 hover:text-primary dark:hover:text-primary transition-colors">Categorías</a>
+                    <a href="/admin/pedidos" class="text-sm font-bold text-gray-600 dark:text-sapphire-200 hover:text-primary dark:hover:text-primary transition-colors">Pedidos</a>
+                    <a href="/admin/usuarios" class="text-sm font-bold text-gray-600 dark:text-sapphire-200 hover:text-primary dark:hover:text-primary transition-colors">Usuarios</a>
+                    <a href="/admin/reportes" class="text-sm font-bold text-gray-600 dark:text-sapphire-200 hover:text-primary dark:hover:text-primary transition-colors">Reportes</a>
+                    <a href="/admin/soporte" class="text-sm font-bold text-gray-600 dark:text-sapphire-200 hover:text-primary dark:hover:text-primary transition-colors flex items-center gap-1">ℹ️ Soporte</a>
+                </div>
+
+                <!-- Right: User Actions -->
+                <div class="flex items-center justify-end space-x-4 md:order-3">
+                    <!-- Theme Toggle -->
+                    <button onclick="toggleTheme()"
+                        class="p-2 rounded-lg bg-gray-100 dark:bg-slate-800 hover:ring-2 hover:ring-primary/50 transition-all">
+                        <svg class="w-5 h-5 dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z">
+                        </svg>
+                        <svg class="w-5 h-5 hidden dark:block text-yellow-500" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 3v1m0 16v1m9-9h-1M4 9h-1m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z">
+                        </svg>
+                    </button>
+
+                    <% if (user) { %>
+                        <div class="flex items-center space-x-3">
+                            <span class="text-sm font-medium text-gray-400 dark:text-sapphire-400">Hola, <span
+                                    class="text-gray-900 dark:text-white font-semibold">
+                                    <%= user.name %>
+                                </span></span>
+                            <div class="h-4 w-px bg-gray-300 dark:bg-sapphire-700"></div>
+                            <a href="/auth/logout"
+                                class="text-[10px] uppercase tracking-wider font-bold text-gray-400 hover:text-accent transition-colors">Salir</a>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+            <!-- Mobile Menu -->
+            <div class="md:hidden flex justify-center space-x-4 pb-3 border-t border-gray-100 dark:border-sapphire-800 pt-3">
+                <a href="/admin/productos" class="text-xs font-bold text-gray-600 dark:text-sapphire-200 hover:text-primary transition-colors">Productos</a>
+                <a href="/admin/categorias" class="text-xs font-bold text-gray-600 dark:text-sapphire-200 hover:text-primary transition-colors">Categorías</a>
+                <a href="/admin/pedidos" class="text-xs font-bold text-gray-600 dark:text-sapphire-200 hover:text-primary transition-colors">Pedidos</a>
+                <a href="/admin/usuarios" class="text-xs font-bold text-gray-600 dark:text-sapphire-200 hover:text-primary transition-colors">Usuarios</a>
+                <a href="/admin/reportes" class="text-xs font-bold text-gray-600 dark:text-sapphire-200 hover:text-primary transition-colors">Reportes</a>
+            </div>
+        </div>
+    </nav>
+
+    <script>
+        // Navbar Scroll Behavior
+        let lastScrollY = window.scrollY;
+        const nav = document.getElementById('navbar');
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > lastScrollY && window.scrollY > 100) {
+                nav.classList.add('-translate-y-full');
+            } else {
+                nav.classList.remove('-translate-y-full');
+            }
+            lastScrollY = window.scrollY;
+        });
+    </script>
+    <!-- Contenedor para mensajes de error globales -->
+    <% if (typeof errorMessage !== 'undefined' && errorMessage) { %>
+        <div class="bg-red-500 text-white p-4 text-center font-bold">
+            <%= errorMessage %>
+        </div>
+    <% } %>
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 min-h-screen">

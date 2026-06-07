@@ -82,9 +82,65 @@ class PedidoModel {
         });
     }
 
+    // [CASO DE USO: Gestionar Pedidos] - El administrador necesita ver un listado de todos los pedidos de la plataforma.
+    static obtenerTodos() {
+        return new Promise((resolve, reject) => {
+            const sql = `
+                SELECT p.*, u.nombre, u.apellido, u.email 
+                FROM pedido p
+                JOIN usuario u ON p.id_usuario = u.id_usuario
+                ORDER BY p.fecha_creacion DESC
+            `;
+            db.all(sql, [], (err, rows) => {
+                if (err) reject(err);
+                else resolve(rows);
+            });
+        });
+    }
+
+    // [CASO DE USO: Generar Reporte Ventas] - Agrupamos cuánto dinero ingresó según el estado del pedido.
+    static obtenerReporteVentas() {
+        return new Promise((resolve, reject) => {
+            const sql = `
+                SELECT estado, COUNT(id_pedido) as cantidad_pedidos, SUM(total) as ingresos_totales 
+                FROM pedido 
+                GROUP BY estado
+            `;
+            db.all(sql, [], (err, rows) => {
+                if (err) reject(err);
+                else resolve(rows);
+            });
+        });
+    }
+
+    static obtenerProductosMasVendidos() {
+        return new Promise((resolve, reject) => {
+            const sql = `
+                SELECT p.nombre, SUM(dp.cantidad) as total_vendido, SUM(dp.subtotal_item) as ingresos
+                FROM detalle_pedido dp
+                JOIN producto p ON dp.id_producto = p.id_producto
+                GROUP BY p.id_producto
+                ORDER BY total_vendido DESC
+                LIMIT 5
+            `;
+            db.all(sql, [], (err, rows) => {
+                if (err) reject(err);
+                else resolve(rows);
+            });
+        });
+    }
+
     static obtenerPedidoPorId(id_pedido) {
         return new Promise((resolve, reject) => {
-            const sql = `SELECT * FROM pedido WHERE id_pedido = ?`;
+            // Unimos el pedido con el usuario y su dirección para ver todos los datos del cliente
+            const sql = `
+                SELECT p.*, u.nombre, u.apellido, u.email,
+                       d.calle, d.numero_calle, d.nro_piso, d.nro_departamento, d.codigo_postal
+                FROM pedido p
+                LEFT JOIN usuario u ON p.id_usuario = u.id_usuario
+                LEFT JOIN direccion d ON p.id_direccion = d.id_direccion
+                WHERE p.id_pedido = ?
+            `;
             db.get(sql, [id_pedido], (err, row) => {
                 if (err) reject(err);
                 else resolve(row);
@@ -95,9 +151,9 @@ class PedidoModel {
     static obtenerDetallesPorPedido(id_pedido) {
         return new Promise((resolve, reject) => {
             const sql = `
-                SELECT dp.*, p.nombre as producto_nombre, p.imagen_url as producto_imagen, p.descripcion as producto_descripcion
+                SELECT dp.*, p.nombre as producto_nombre, p.imagen as producto_imagen, p.descripcion as producto_descripcion
                 FROM detalle_pedido dp
-                JOIN producto p ON dp.id_producto = p.id_producto
+                LEFT JOIN producto p ON dp.id_producto = p.id_producto
                 WHERE dp.id_pedido = ?
             `;
             db.all(sql, [id_pedido], (err, rows) => {

@@ -4,7 +4,7 @@ const CategoriaModel = require('../models/categoriaModel');
 class ProductoService {
     static async obtenerCatalogoAgrupado() {
         const productos = await ProductoModel.obtenerActivos();
-        const categorias = await CategoriaModel.obtenerTodas();
+        const categorias = await CategoriaModel.obtenerActivas();
 
         // Agrupar productos por categoría
         const categoriasAgrupadas = categorias.map(cat => ({

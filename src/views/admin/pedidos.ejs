@@ -1,0 +1,49 @@
+<%- include('../partials/header_admin') %>
+
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Gestión de Pedidos</h1>
+
+    <!-- [CASO DE USO: Gestionar Pedidos - Visualizar Pedidos Pendientes] -->
+    <div class="bg-white dark:bg-sapphire-900 rounded-2xl shadow overflow-hidden">
+        <table class="w-full text-left border-collapse">
+            <thead>
+                <tr class="bg-gray-100 dark:bg-sapphire-800 text-gray-700 dark:text-gray-300">
+                    <th class="p-4 border-b dark:border-sapphire-700">Pedido N°</th>
+                    <th class="p-4 border-b dark:border-sapphire-700">Fecha</th>
+                    <th class="p-4 border-b dark:border-sapphire-700">Cliente</th>
+                    <th class="p-4 border-b dark:border-sapphire-700">Total</th>
+                    <th class="p-4 border-b dark:border-sapphire-700">Estado</th>
+                    <th class="p-4 border-b dark:border-sapphire-700">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% pedidos.forEach(pedido => { %>
+                <tr class="border-b dark:border-sapphire-800 hover:bg-gray-50 dark:hover:bg-sapphire-800/50">
+                    <td class="p-4 font-bold text-gray-900 dark:text-white">#<%= pedido.id_pedido %></td>
+                    <td class="p-4 text-gray-700 dark:text-gray-300"><%= new Date(pedido.fecha_creacion).toLocaleDateString() %></td>
+                    <td class="p-4 text-gray-700 dark:text-gray-300">
+                        <%= pedido.nombre %> <%= pedido.apellido %><br>
+                        <span class="text-xs text-gray-500"><%= pedido.email %></span>
+                    </td>
+                    <td class="p-4 font-bold text-green-600 dark:text-green-400">$<%= pedido.total %></td>
+                    <td class="p-4">
+                        <% if(pedido.estado === 'Pendiente') { %>
+                            <span class="bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded"><%= pedido.estado %></span>
+                        <% } else if(pedido.estado === 'Enviado') { %>
+                            <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded"><%= pedido.estado %></span>
+                        <% } else { %>
+                            <span class="bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-0.5 rounded"><%= pedido.estado %></span>
+                        <% } %>
+                    </td>
+                    <td class="p-4">
+                        <!-- [CASO DE USO: Gestionar Pedidos - Consultar Detalle Pedido] -->
+                        <a href="/admin/pedidos/<%= pedido.id_pedido %>" class="bg-indigo-500 text-white px-3 py-1 rounded text-sm hover:bg-indigo-600 inline-block">Ver Detalle</a>
+                    </td>
+                </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>
