@@ -23,10 +23,11 @@ class PedidoController {
                 return res.redirect('/products?error=Tu carrito esta vacio!');
             }
 
-            // Obtener datos del usuario para extraer id_direccion
+            // Obtener datos del usuario para extraer id_direccion y verificar estado
             const usuario = await UsuarioModel.obtenerPorId(req.session.userId);
-            if (!usuario) {
-                return res.redirect('/auth/login?error=Usuario no encontrado');
+            if (!usuario || usuario.estado !== 'activo') {
+                req.session.destroy();
+                return res.redirect('/auth/login?error=Tu cuenta ha sido desactivada por el administrador');
             }
 
             // Obtener dirección asociada
@@ -102,6 +103,13 @@ class PedidoController {
             }
 
             const id_usuario = req.session.userId;
+            const usuario = await UsuarioModel.obtenerPorId(id_usuario);
+
+            if (!usuario || usuario.estado !== 'activo') {
+                req.session.destroy();
+                return res.redirect('/auth/login?error=Tu cuenta ha sido desactivada por el administrador');
+            }
+
             let { id_metodo_pago, id_metodo_envio, id_direccion, modificar_direccion } = req.body;
 
             if (!id_metodo_pago || !id_metodo_envio) {
@@ -122,8 +130,7 @@ class PedidoController {
                         throw new Error("Datos de dirección incompletos. Por favor completa los campos requeridos.");
                     }
 
-                    // Obtener instancia del usuario para guardar su dirección
-                    const usuario = await UsuarioModel.obtenerPorId(id_usuario);
+                    // La instancia del usuario ya fue obtenida arriba, solo verificamos que exista.
                     if (!usuario) {
                         throw new Error("Usuario no encontrado.");
                     }
