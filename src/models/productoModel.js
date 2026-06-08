@@ -48,7 +48,7 @@ class ProductoModel {
         });
     }
 
-    // Aquí guardamos un producto completamente nuevo en la base de datos con los datos del formulario.
+    // Guardamos un producto completamente nuevo en la base de datos con los datos del formulario.
     static crear(datos) {
         return new Promise((resolve, reject) => {
             const sql = `INSERT INTO producto (nombre, descripcion, precio_unitario, stock, imagen, id_categoria, estado_producto) VALUES (?, ?, ?, ?, ?, ?, 'activo')`;
@@ -59,7 +59,7 @@ class ProductoModel {
         });
     }
 
-    // Aquí tomamos un producto existente y actualizamos sus datos (nombre, precio, stock, etc.).
+    //Tomamos un producto existente y actualizamos sus datos (nombre, precio, stock, etc.).
     static actualizar(id, datos) {
         return new Promise((resolve, reject) => {
             const sql = `UPDATE producto SET nombre = ?, descripcion = ?, precio_unitario = ?, stock = ?, imagen = ?, id_categoria = ? WHERE id_producto = ?`;
@@ -80,7 +80,7 @@ class ProductoModel {
             });
         });
     }
-
+ 
     // [CASO DE USO: Gestionar Productos] - Vuelve a poner un producto inactivo a la venta.
     static activar(id) {
         return new Promise((resolve, reject) => {

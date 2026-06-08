@@ -16,11 +16,11 @@ class PedidoModel {
         return new Promise((resolve, reject) => {
             db.serialize(() => {
                 db.run("BEGIN TRANSACTION"); //transaccion atomica pura para garantizar integridad de datos
-
+ 
                 const { id_usuario, id_metodo_pago, id_metodo_envio, id_direccion, subtotal_pedido, descuento_aplicado, total, items } = datos;
                 const fecha_creacion = new Date().toISOString();
                 const estado = 'Pendiente'; // Estado inicial según Larman
-                
+                 
                 db.run(
                     //asociando id_usuario, id_metodo_pago y id_direccion. Postcondicion 1,2,3,4 del contrato
                     `INSERT INTO pedido (fecha_creacion, estado, subtotal_pedido, descuento_aplicado, total, id_usuario, id_metodo_pago, id_metodo_envio, id_direccion) 

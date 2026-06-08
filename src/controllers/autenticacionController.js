@@ -72,7 +72,12 @@ class AutenticacionController {
             req.session.userRole = usuario.id_rol;
             req.session.userName = usuario.nombre;
 
-            res.redirect('/');
+            // Si es administrador (rol 1), redirigir a su panel, de lo contrario al home
+            if (usuario.id_rol === 1) {
+                res.redirect('/admin/dashboard');
+            } else {
+                res.redirect('/');
+            }
         } catch (error) {
             console.error("Error en login:", error.message);
             res.render('auth/login', { cantidadCarrito: 0, error: error.message, success: null });

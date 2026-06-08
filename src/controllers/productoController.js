@@ -13,7 +13,7 @@ class ProductoController {
             res.status(500).send("Error interno del servidor");
         }
     }
-
+ 
     static async verDetalle(req, res) {
         try {
             const id = req.params.id;

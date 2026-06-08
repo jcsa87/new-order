@@ -16,7 +16,7 @@ class PedidoService {
         if (items.length === 0) {
             throw new Error("El carrito está vacío.");
         }
-
+ 
         const totales = CarritoService.obtenerTotales();
         
         const subtotal = parseFloat(totales.subtotal);

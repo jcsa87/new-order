@@ -19,5 +19,5 @@ class ProductoService {
         return await ProductoModel.obtenerPorId(id);
     }
 }
-
+ 
 module.exports = ProductoService;
