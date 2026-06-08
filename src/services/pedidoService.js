@@ -27,7 +27,7 @@ class PedidoService {
             id_usuario,
             id_metodo_pago: parseInt(id_metodo_pago),
             id_metodo_envio: parseInt(id_metodo_envio),
-            id_direccion: parseInt(id_direccion),
+            id_direccion: id_direccion ? parseInt(id_direccion) : null,
             subtotal_pedido: subtotal,
             descuento_aplicado: descuento,
             total: parseFloat(totalFinal.toFixed(2)),

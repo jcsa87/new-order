@@ -44,15 +44,19 @@ class PedidoModel {
                                 if (err) errores = true;
                             });
                         }
-                        stmt.finalize();
-
-                        if (errores) {
-                            db.run("ROLLBACK");
-                            return reject(new Error("Error al insertar detalles del pedido"));
-                        }
-
-                        db.run("COMMIT"); //el commit significa que a nivel de base de datos, si algo falla, no se guardan pedidos "a medias"
-                        resolve(id_pedido);
+                        stmt.finalize(() => {
+                            if (errores) {
+                                db.run("ROLLBACK");
+                                return reject(new Error("Error al insertar detalles del pedido"));
+                            }
+                            db.run("COMMIT", function(err) {
+                                if (err) {
+                                    db.run("ROLLBACK");
+                                    return reject(err);
+                                }
+                                resolve(id_pedido);
+                            });
+                        });
                     }
                 );
             });
