@@ -9,6 +9,7 @@ class UsuarioModel {
         this.contrasena = row.contrasena;
         this.id_direccion = row.id_direccion;
         this.id_rol = row.id_rol;
+        this.estado = row.estado;
     }
 
     /**
@@ -26,12 +27,17 @@ class UsuarioModel {
     }
 
     static async verificarUsuario(datosRegistro) {
-        const { email, nombre, apellido, contrasena, confirmarContrasena, id_provincia, id_localidad } = datosRegistro;
+        const { email, nombre, apellido, contrasena, confirmarContrasena } = datosRegistro;
 
-        //Excepcion del contrato de operaciones-CU Registro usuario 
-        // Flujo Alternativo: Campos incompletos
-        if (!email || !nombre || !apellido || !contrasena || !confirmarContrasena || !id_provincia || !id_localidad) {
+        // Flujo Alternativo: Campos incompletos (solo datos personales)
+        if (!email || !nombre || !apellido || !contrasena || !confirmarContrasena) {
             throw new Error("Campo obligatorio incompleto. Por favor completa todos los datos obligatorios.");
+        }
+
+        // Validar formato de correo electrónico
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            throw new Error("Por favor, incluye un @ y un dominio válido en tu dirección e-mail.");
         }
 
         // Validar longitud mínima de la contraseña
@@ -102,35 +108,43 @@ class UsuarioModel {
             db.serialize(() => {
                 db.run("BEGIN TRANSACTION");
 
-                const { address } = datosUsuario;
-                db.run(
-                    `INSERT INTO direccion (calle, numero_calle, nro_piso, nro_departamento, codigo_postal, id_localidad) 
-                     VALUES (?, ?, ?, ?, ?, ?)`,
-                    [address.calle, address.numero_calle, address.nro_piso, address.nro_departamento, address.codigo_postal, address.id_localidad],
-                    function(err) {
-                        if (err) {
-                            db.run("ROLLBACK");
-                            return reject(err);
-                        }
-
-                        const id_direccion = this.lastID;
-                        const { nombre, apellido, email, contrasena, id_rol } = datosUsuario;
-                        
-                        db.run(
-                            `INSERT INTO usuario (nombre, apellido, email, contrasena, id_direccion, id_rol) 
-                             VALUES (?, ?, ?, ?, ?, ?)`,
-                            [nombre, apellido, email, contrasena, id_direccion, id_rol || 2], // 2 = Cliente por defecto
-                            function(err) {
-                                if (err) {
-                                    db.run("ROLLBACK");
-                                    return reject(err);
-                                }
-                                db.run("COMMIT");
-                                resolve(this.lastID);
+                const { address, nombre, apellido, email, contrasena, id_rol } = datosUsuario;
+                
+                // Función auxiliar para registrar el usuario
+                const registrarUsuario = (id_direccion_insertado) => {
+                    db.run(
+                        `INSERT INTO usuario (nombre, apellido, email, contrasena, id_direccion, id_rol) 
+                         VALUES (?, ?, ?, ?, ?, ?)`,
+                        [nombre, apellido, email, contrasena, id_direccion_insertado, id_rol || 2],
+                        function(err) {
+                            if (err) {
+                                db.run("ROLLBACK");
+                                return reject(err);
                             }
-                        );
-                    }
-                );
+                            db.run("COMMIT");
+                            resolve(this.lastID);
+                        }
+                    );
+                };
+
+                // Si NO hay calle o provincia/localidad, creamos el usuario sin dirección
+                if (!address.calle || !address.id_localidad) {
+                    registrarUsuario(null);
+                } else {
+                    // Si completó la dirección, la insertamos primero
+                    db.run(
+                        `INSERT INTO direccion (calle, numero_calle, nro_piso, nro_departamento, codigo_postal, id_localidad) 
+                         VALUES (?, ?, ?, ?, ?, ?)`,
+                        [address.calle, address.numero_calle || 'S/N', address.nro_piso, address.nro_departamento, address.codigo_postal || '0000', address.id_localidad],
+                        function(err) {
+                            if (err) {
+                                db.run("ROLLBACK");
+                                return reject(err);
+                            }
+                            registrarUsuario(this.lastID);
+                        }
+                    );
+                }
             });
         });
     }
