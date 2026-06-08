@@ -23,10 +23,16 @@ class CarritoController {
             // 2. DELEGA la responsabilidad al Dominio/Servicio
             await CarritoService.agregarItem(productId, cantidad);
 
+            // 3. Responde a la interfaz (Redirección limpiando errores previos)
             const referer = req.get('Referer') || '/products';
-            const separator = referer.includes('?') ? '&' : '?';
-            // 3. Responde a la interfaz (Redirección)
-            res.redirect(referer + separator + 'cart=open');
+            try {
+                const url = new URL(referer, `http://${req.headers.host}`);
+                url.searchParams.delete('error');
+                url.searchParams.set('cart', 'open');
+                res.redirect(url.pathname + url.search);
+            } catch (e) {
+                res.redirect('/products?cart=open');
+            }
         } catch (error) {
             console.error("[CONTROLLER] Error:", error.message);
 
@@ -68,8 +74,14 @@ class CarritoController {
             }
 
             const referer = req.get('Referer') || '/cart';
-            const separator = referer.includes('?') ? '&' : '?';
-            res.redirect(referer + separator + 'cart=open');
+            try {
+                const url = new URL(referer, `http://${req.headers.host}`);
+                url.searchParams.delete('error');
+                url.searchParams.set('cart', 'open');
+                res.redirect(url.pathname + url.search);
+            } catch (e) {
+                res.redirect('/cart?cart=open');
+            }
         } catch (error) {
             console.error("[CONTROLLER] Error:", error.message);
             const referer = req.get('Referer') || '/cart';
@@ -94,8 +106,14 @@ class CarritoController {
         }
 
         const referer = req.get('Referer') || '/cart';
-        const separator = referer.includes('?') ? '&' : '?';
-        res.redirect(referer + separator + 'cart=open');
+        try {
+            const url = new URL(referer, `http://${req.headers.host}`);
+            url.searchParams.delete('error');
+            url.searchParams.set('cart', 'open');
+            res.redirect(url.pathname + url.search);
+        } catch (e) {
+            res.redirect('/cart?cart=open');
+        }
     }
 }
 
