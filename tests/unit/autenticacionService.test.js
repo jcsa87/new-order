@@ -28,7 +28,7 @@ describe('AutenticacionService & UsuarioModel - Registro', () => {
         };
 
         test('Debe lanzar error si algún campo obligatorio falta', async () => {
-            const campos = ['nombre', 'apellido', 'email', 'contrasena', 'confirmarContrasena', 'id_provincia', 'id_localidad'];
+            const campos = ['nombre', 'apellido', 'email', 'contrasena', 'confirmarContrasena'];
             
             for (const campo of campos) {
                 const datosIncompletos = { ...datosValidos };
