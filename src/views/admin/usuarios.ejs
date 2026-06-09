@@ -34,7 +34,10 @@
                     </td>
                     <td class="p-4">
                         <!-- [CASO DE USO: Gestionar Usuarios - Desactivar Usuario] -->
-                        <% if(usuario.estado !== 'inactivo') { %>
+                        <!-- [CASO DE USO: Gestionar Usuarios - Desactivar Usuario] -->
+                        <% if(usuario.id_rol === 1) { %>
+                            <span class="text-gray-400 text-sm font-semibold italic">Protegido (Admin)</span>
+                        <% } else if(usuario.estado !== 'inactivo') { %>
                         <form action="/admin/usuarios/desactivar/<%= usuario.id_usuario %>" method="POST" onsubmit="return confirm('¿Seguro que deseas desactivar este usuario?');">
                             <button type="submit" class="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600">Desactivar</button>
                         </form>

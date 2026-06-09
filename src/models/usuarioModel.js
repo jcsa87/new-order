@@ -68,7 +68,7 @@ class UsuarioModel {
     static obtenerTodos() {
         return new Promise((resolve, reject) => {
             const sql = `
-                SELECT u.id_usuario, u.nombre, u.apellido, u.email, u.estado, r.nombre as rol_nombre 
+                SELECT u.id_usuario, u.id_rol, u.nombre, u.apellido, u.email, u.estado, r.nombre as rol_nombre 
                 FROM usuario u
                 JOIN rol r ON u.id_rol = r.id_rol
             `;

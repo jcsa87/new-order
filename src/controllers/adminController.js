@@ -200,6 +200,10 @@ class AdminController {
     // Banea a un usuario cambiando su estado a 'inactivo' para que su inicio de sesión sea rechazado.
     static async desactivarUsuario(req, res) {
         try {
+            const usuarioTarget = await UsuarioModel.obtenerPorId(req.params.id);
+            if (usuarioTarget && usuarioTarget.id_rol === 1) {
+                return res.redirect('/admin/usuarios?error=Un+administrador+no+puede+ser+desactivado');
+            }
             await UsuarioModel.desactivar(req.params.id);
             res.redirect('/admin/usuarios');
         } catch (error) {
